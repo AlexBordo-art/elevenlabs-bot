@@ -1,0 +1,10 @@
+.env
+.env.local
+!.env.example
+
+# n8n exports with credentials
+*credentials*
+
+# OS
+.DS_Store
+Thumbs.db
