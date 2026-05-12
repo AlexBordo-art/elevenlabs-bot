@@ -3,21 +3,21 @@
   "nodes": [
     {
       "parameters": {
-        "updates": ["message", "callback_query"],
+        "updates": [
+          "message",
+          "callback_query"
+        ],
         "additionalFields": {}
       },
       "id": "node-tg-trigger",
       "name": "TG Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
-      "position": [240, 400],
-      "webhookId": "elevenlabs-bot-webhook",
-      "credentials": {
-        "telegramApi": {
-          "id": "1",
-          "name": "Telegram Bot"
-        }
-      }
+      "position": [
+        240,
+        400
+      ],
+      "webhookId": "elevenlabs-bot-webhook"
     },
     {
       "parameters": {
@@ -27,7 +27,10 @@
       "name": "Parse Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [460, 400]
+      "position": [
+        460,
+        400
+      ]
     },
     {
       "parameters": {
@@ -35,12 +38,19 @@
           "values": [
             {
               "conditions": {
-                "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
                 "conditions": [
                   {
                     "leftValue": "={{ $json.kind }}",
                     "rightValue": "message",
-                    "operator": {"type": "string", "operation": "equals"}
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
                   }
                 ],
                 "combinator": "and"
@@ -50,12 +60,19 @@
             },
             {
               "conditions": {
-                "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
                 "conditions": [
                   {
                     "leftValue": "={{ $json.kind }}",
                     "rightValue": "callback_query",
-                    "operator": {"type": "string", "operation": "equals"}
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
                   }
                 ],
                 "combinator": "and"
@@ -71,33 +88,98 @@
       "name": "Route by Type",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
-      "position": [680, 400]
+      "position": [
+        680,
+        400
+      ]
     },
-
-    { "parameters": {
-        "rules": {"values": [
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.command }}", "rightValue": "/start", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "start"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.command }}", "rightValue": "/menu", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "menu"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.is_command }}", "rightValue": false, "operator": {"type": "boolean", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "text"}
-        ]}, "options": {}
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "/menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "menu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.is_command }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "node-route-msg",
       "name": "MSG: Route",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
-      "position": [900, 200]
+      "position": [
+        900,
+        200
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO users (telegram_user_id, username, first_name, last_name)\nVALUES (?, ?, ?, ?)\nON DUPLICATE KEY UPDATE\n  username = VALUES(username),\n  first_name = VALUES(first_name),\n  last_name = VALUES(last_name),\n  is_active = 1",
+        "query": "INSERT INTO users (telegram_user_id, username, first_name, last_name)\nVALUES ($1, $2, $3, $4)\nON DUPLICATE KEY UPDATE\n  username = VALUES(username),\n  first_name = VALUES(first_name),\n  last_name = VALUES(last_name),\n  is_active = 1",
         "options": {
           "queryReplacement": "={{ [$json.telegram_user_id, $json.username, $json.first_name, $json.last_name] }}"
         }
@@ -106,13 +188,15 @@
       "name": "/start: Upsert User",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1120, 100],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1120,
+        100
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO user_sessions (telegram_user_id, current_action)\nVALUES (?, 'idle')\nON DUPLICATE KEY UPDATE current_action = 'idle'",
+        "query": "INSERT INTO user_sessions (telegram_user_id, current_action)\nVALUES ($1, 'idle')\nON DUPLICATE KEY UPDATE current_action = 'idle'",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -121,31 +205,59 @@
       "name": "/start: Init Session",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 100],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        100
+      ]
     },
-
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "=Привет, {{ $('Parse Update').item.json.first_name || 'друг' }}! 👋\n\nЯ помогу управлять твоими голосовыми агентами ElevenLabs.\n\nВыбери действие:",
-        "additionalFields": {
-          "reply_markup": "={{ JSON.stringify({inline_keyboard: [[{text: '🎙 Мои агенты', callback_data: 'list_agents'}], [{text: '➕ Добавить агента', callback_data: 'add_agent'}]]}) }}",
-          "parse_mode": "Markdown"
+        "additionalFields": {},
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎙 Мои агенты",
+                    "additionalFields": {
+                      "callback_data": "list_agents"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "➕ Добавить агента",
+                    "additionalFields": {
+                      "callback_data": "add_agent"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       },
       "id": "node-send-main-menu",
       "name": "Send Main Menu",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1560, 100],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1560,
+        100
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT current_action, selected_agent_db_id\nFROM user_sessions\nWHERE telegram_user_id = ?",
+        "query": "SELECT current_action, selected_agent_db_id\nFROM user_sessions\nWHERE telegram_user_id = $1",
         "options": {
           "queryReplacement": "={{ [$json.telegram_user_id] }}"
         }
@@ -154,37 +266,122 @@
       "name": "TXT: Get Session",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1120, 360],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1120,
+        360
+      ]
     },
     {
       "parameters": {
-        "rules": {"values": [
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.current_action }}", "rightValue": "awaiting_prompt", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "prompt"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.current_action }}", "rightValue": "awaiting_welcome", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "welcome"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.current_action }}", "rightValue": "awaiting_kb_text", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "kb"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $json.current_action }}", "rightValue": "awaiting_agent_name", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "addagent"}
-        ]}, "options": {"fallbackOutput": "extra"}
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.current_action }}",
+                    "rightValue": "awaiting_prompt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "prompt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.current_action }}",
+                    "rightValue": "awaiting_welcome",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "welcome"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.current_action }}",
+                    "rightValue": "awaiting_kb_text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "kb"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.current_action }}",
+                    "rightValue": "awaiting_agent_name",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "addagent"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
       },
       "id": "node-txt-route-fsm",
       "name": "TXT: Route FSM",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
-      "position": [1340, 360]
+      "position": [
+        1340,
+        360
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = ?\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -193,15 +390,29 @@
       "name": "PROMPT: Get Agent (ownership)",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1560, 200],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1560,
+        200
+      ]
     },
     {
       "parameters": {
         "conditions": {
-          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
           "conditions": [
-            {"leftValue": "={{ $json.elevenlabs_agent_id }}", "rightValue": "", "operator": {"type": "string", "operation": "exists", "singleValue": true}}
+            {
+              "leftValue": "={{ $json.elevenlabs_agent_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
           ],
           "combinator": "and"
         }
@@ -210,7 +421,10 @@
       "name": "PROMPT: Agent found?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [1780, 200]
+      "position": [
+        1780,
+        200
+      ]
     },
     {
       "parameters": {
@@ -220,24 +434,38 @@
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
-          "parameters": [{"name": "Content-Type", "value": "application/json"}]
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
         },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $('Parse Update').item.json.text } } } }) }}",
-        "options": {"response": {"response": {"responseFormat": "json", "fullResponse": false}}}
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json",
+              "fullResponse": false
+            }
+          }
+        }
       },
       "id": "node-prompt-patch",
       "name": "PROMPT: PATCH ElevenLabs",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [2000, 160],
-      "credentials": {"httpHeaderAuth": {"id": "3", "name": "ElevenLabs xi-api-key"}}
+      "position": [
+        2000,
+        160
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = ?;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES (?, ?, 'edit_prompt', 'success');",
+        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_prompt', 'success');",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('PROMPT: Get Agent (ownership)').item.json.id] }}"
         }
@@ -246,8 +474,10 @@
       "name": "PROMPT: Reset + Log",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [2220, 160],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        2220,
+        160
+      ]
     },
     {
       "parameters": {
@@ -259,14 +489,15 @@
       "name": "PROMPT: Confirm",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [2440, 160],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        2440,
+        160
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = ?\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -275,8 +506,10 @@
       "name": "WELCOME: Get Agent",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1560, 360],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1560,
+        360
+      ]
     },
     {
       "parameters": {
@@ -285,7 +518,14 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
-        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $('Parse Update').item.json.text } } }) }}",
@@ -295,13 +535,15 @@
       "name": "WELCOME: PATCH",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1780, 360],
-      "credentials": {"httpHeaderAuth": {"id": "3", "name": "ElevenLabs xi-api-key"}}
+      "position": [
+        1780,
+        360
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = ?;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES (?, ?, 'edit_welcome', 'success');",
+        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_welcome', 'success');",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('WELCOME: Get Agent').item.json.id] }}"
         }
@@ -310,8 +552,10 @@
       "name": "WELCOME: Reset + Log",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [2000, 360],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        2000,
+        360
+      ]
     },
     {
       "parameters": {
@@ -322,14 +566,15 @@
       "name": "WELCOME: Confirm",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [2220, 360],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        2220,
+        360
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = ?\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -338,8 +583,10 @@
       "name": "KB: Get Agent",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1560, 520],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1560,
+        520
+      ]
     },
     {
       "parameters": {
@@ -348,7 +595,14 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
-        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: $('Parse Update').item.json.text }) }}",
@@ -358,8 +612,10 @@
       "name": "KB: Create Doc",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1780, 520],
-      "credentials": {"httpHeaderAuth": {"id": "3", "name": "ElevenLabs xi-api-key"}}
+      "position": [
+        1780,
+        520
+      ]
     },
     {
       "parameters": {
@@ -368,7 +624,14 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
-        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $json.name, id: $json.id }] } } } }) }}",
@@ -378,13 +641,15 @@
       "name": "KB: Attach to Agent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [2000, 520],
-      "credentials": {"httpHeaderAuth": {"id": "3", "name": "ElevenLabs xi-api-key"}}
+      "position": [
+        2000,
+        520
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = ?;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES (?, ?, 'edit_kb', 'success');",
+        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_kb', 'success');",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('KB: Get Agent').item.json.id] }}"
         }
@@ -393,8 +658,10 @@
       "name": "KB: Reset + Log",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [2220, 520],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        2220,
+        520
+      ]
     },
     {
       "parameters": {
@@ -405,29 +672,39 @@
       "name": "KB: Confirm",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [2440, 520],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        2440,
+        520
+      ]
     },
-
     {
       "parameters": {
         "method": "GET",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $('Parse Update').item.json.text }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
-        "options": {"response": {"response": {"neverError": true, "responseFormat": "json"}}}
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "node-addagent-validate",
       "name": "ADDAGENT: Validate",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1560, 680],
-      "credentials": {"httpHeaderAuth": {"id": "3", "name": "ElevenLabs xi-api-key"}}
+      "position": [
+        1560,
+        680
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO user_agents (user_id, elevenlabs_agent_id, agent_name)\nSELECT u.id, ?, ?\nFROM users u\nWHERE u.telegram_user_id = ?\nON DUPLICATE KEY UPDATE is_active = 1, agent_name = VALUES(agent_name);\n\nUPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = ?;",
+        "query": "INSERT INTO user_agents (user_id, elevenlabs_agent_id, agent_name)\nSELECT u.id, $1, $2\nFROM users u\nWHERE u.telegram_user_id = $3\nON DUPLICATE KEY UPDATE is_active = 1, agent_name = VALUES(agent_name);\n\nUPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $4;",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.text, ($json.name || 'Agent ' + $('Parse Update').item.json.text.slice(0,8)), $('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -436,8 +713,10 @@
       "name": "ADDAGENT: Insert",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1780, 680],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1780,
+        680
+      ]
     },
     {
       "parameters": {
@@ -448,10 +727,11 @@
       "name": "ADDAGENT: Confirm",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [2000, 680],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        2000,
+        680
+      ]
     },
-
     {
       "parameters": {
         "resource": "callback",
@@ -464,46 +744,186 @@
       "name": "CB: Answer",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [900, 600],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        900,
+        600
+      ]
     },
     {
       "parameters": {
-        "rules": {"values": [
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "list_agents", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "list"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "select", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "select"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "edit_prompt", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "edit_prompt"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "edit_welcome", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "edit_welcome"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "edit_kb", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "edit_kb"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "add_agent", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "add"},
-          {"conditions": {"options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose"},
-            "conditions": [{"leftValue": "={{ $('Parse Update').item.json.cb_action }}", "rightValue": "menu", "operator": {"type": "string", "operation": "equals"}}],
-            "combinator": "and"}, "renameOutput": true, "outputKey": "menu"}
-        ]}, "options": {}
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "list_agents",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "list"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "select",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "select"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "edit_prompt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "edit_prompt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "edit_welcome",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "edit_welcome"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "edit_kb",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "edit_kb"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "add_agent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "add"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                    "rightValue": "menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "menu"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "node-cb-route",
       "name": "CB: Route Action",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
-      "position": [1120, 600]
+      "position": [
+        1120,
+        600
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = ?\n  AND ua.is_active = 1\nORDER BY ua.created_at DESC",
+        "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = $1\n  AND ua.is_active = 1\nORDER BY ua.created_at DESC",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -512,8 +932,10 @@
       "name": "LIST: Get Agents",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 480],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        480
+      ]
     },
     {
       "parameters": {
@@ -523,28 +945,34 @@
       "name": "LIST: Build Keyboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1560, 480]
+      "position": [
+        1560,
+        480
+      ]
     },
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "={{ $json.text }}",
-        "additionalFields": {
-          "reply_markup": "={{ JSON.stringify({inline_keyboard: $json.keyboard}) }}"
+        "additionalFields": {},
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": "={{ $json.keyboard.map(row => ({ row: { buttons: row.map(b => ({ text: b.text, additionalFields: { callback_data: b.callback_data } })) } })) }}"
         }
       },
       "id": "node-list-send",
       "name": "LIST: Send",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1780, 480],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1780,
+        480
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions s\nJOIN users u ON u.telegram_user_id = s.telegram_user_id\nJOIN user_agents ua ON ua.user_id = u.id AND ua.id = ?\nSET s.selected_agent_db_id = ua.id, s.current_action = 'idle'\nWHERE s.telegram_user_id = ? AND ua.is_active = 1",
+        "query": "UPDATE user_sessions s\nJOIN users u ON u.telegram_user_id = s.telegram_user_id\nJOIN user_agents ua ON ua.user_id = u.id AND ua.id = $1\nSET s.selected_agent_db_id = ua.id, s.current_action = 'idle'\nWHERE s.telegram_user_id = $2 AND ua.is_active = 1",
         "options": {
           "queryReplacement": "={{ [parseInt($('Parse Update').item.json.cb_param), $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -553,13 +981,15 @@
       "name": "SELECT: Set Selected",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 640],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        640
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = ? AND ua.id = ? AND ua.is_active = 1",
+        "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = $1 AND ua.id = $2 AND ua.is_active = 1",
         "options": {
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, parseInt($('Parse Update').item.json.cb_param)] }}"
         }
@@ -568,30 +998,83 @@
       "name": "SELECT: Get Agent",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1560, 640],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1560,
+        640
+      ]
     },
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "=🎙 Агент: *{{ $json.agent_name || $json.elevenlabs_agent_id }}*\n\nЧто хочешь изменить?",
-        "additionalFields": {
-          "parse_mode": "Markdown",
-          "reply_markup": "={{ JSON.stringify({inline_keyboard: [[{text: '✏ Изменить промпт', callback_data: 'edit_prompt'}], [{text: '👋 Изменить приветствие', callback_data: 'edit_welcome'}], [{text: '📚 Обновить базу знаний', callback_data: 'edit_kb'}], [{text: '⬅ К списку', callback_data: 'list_agents'}]]}) }}"
+        "additionalFields": {},
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✏ Изменить промпт",
+                    "additionalFields": {
+                      "callback_data": "edit_prompt"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "👋 Изменить приветствие",
+                    "additionalFields": {
+                      "callback_data": "edit_welcome"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📚 Обновить базу знаний",
+                    "additionalFields": {
+                      "callback_data": "edit_kb"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "⬅ К списку",
+                    "additionalFields": {
+                      "callback_data": "list_agents"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       },
       "id": "node-select-send",
       "name": "SELECT: Send Agent Menu",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1780, 640],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1780,
+        640
+      ]
     },
-
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = ? WHERE telegram_user_id = ? AND selected_agent_db_id IS NOT NULL",
+        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
         "options": {
           "queryReplacement": "={{ ['awaiting_prompt', $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -600,8 +1083,10 @@
       "name": "EDIT_PROMPT: Set State",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 760],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        760
+      ]
     },
     {
       "parameters": {
@@ -612,13 +1097,15 @@
       "name": "EDIT_PROMPT: Ask",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1560, 760],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1560,
+        760
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = ? WHERE telegram_user_id = ? AND selected_agent_db_id IS NOT NULL",
+        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
         "options": {
           "queryReplacement": "={{ ['awaiting_welcome', $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -627,8 +1114,10 @@
       "name": "EDIT_WELCOME: Set State",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 860],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        860
+      ]
     },
     {
       "parameters": {
@@ -639,13 +1128,15 @@
       "name": "EDIT_WELCOME: Ask",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1560, 860],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1560,
+        860
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = ? WHERE telegram_user_id = ? AND selected_agent_db_id IS NOT NULL",
+        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
         "options": {
           "queryReplacement": "={{ ['awaiting_kb_text', $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -654,8 +1145,10 @@
       "name": "EDIT_KB: Set State",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 960],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        960
+      ]
     },
     {
       "parameters": {
@@ -666,13 +1159,15 @@
       "name": "EDIT_KB: Ask",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1560, 960],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1560,
+        960
+      ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = ? WHERE telegram_user_id = ?",
+        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2",
         "options": {
           "queryReplacement": "={{ ['awaiting_agent_name', $('Parse Update').item.json.telegram_user_id] }}"
         }
@@ -681,8 +1176,10 @@
       "name": "ADD: Set State",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
-      "position": [1340, 1060],
-      "credentials": {"mySql": {"id": "2", "name": "MySQL elevenlabs_bot"}}
+      "position": [
+        1340,
+        1060
+      ]
     },
     {
       "parameters": {
@@ -693,78 +1190,444 @@
       "name": "ADD: Ask",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1560, 1060],
-      "credentials": {"telegramApi": {"id": "1", "name": "Telegram Bot"}}
+      "position": [
+        1560,
+        1060
+      ]
     }
   ],
   "connections": {
-    "TG Trigger": {"main": [[{"node": "Parse Update", "type": "main", "index": 0}]]},
-    "Parse Update": {"main": [[{"node": "Route by Type", "type": "main", "index": 0}]]},
-    "Route by Type": {"main": [
-      [{"node": "MSG: Route", "type": "main", "index": 0}],
-      [{"node": "CB: Answer", "type": "main", "index": 0}]
-    ]},
-
-    "MSG: Route": {"main": [
-      [{"node": "/start: Upsert User", "type": "main", "index": 0}],
-      [{"node": "Send Main Menu", "type": "main", "index": 0}],
-      [{"node": "TXT: Get Session", "type": "main", "index": 0}]
-    ]},
-    "/start: Upsert User": {"main": [[{"node": "/start: Init Session", "type": "main", "index": 0}]]},
-    "/start: Init Session": {"main": [[{"node": "Send Main Menu", "type": "main", "index": 0}]]},
-
-    "TXT: Get Session": {"main": [[{"node": "TXT: Route FSM", "type": "main", "index": 0}]]},
-    "TXT: Route FSM": {"main": [
-      [{"node": "PROMPT: Get Agent (ownership)", "type": "main", "index": 0}],
-      [{"node": "WELCOME: Get Agent", "type": "main", "index": 0}],
-      [{"node": "KB: Get Agent", "type": "main", "index": 0}],
-      [{"node": "ADDAGENT: Validate", "type": "main", "index": 0}]
-    ]},
-
-    "PROMPT: Get Agent (ownership)": {"main": [[{"node": "PROMPT: Agent found?", "type": "main", "index": 0}]]},
-    "PROMPT: Agent found?": {"main": [
-      [{"node": "PROMPT: PATCH ElevenLabs", "type": "main", "index": 0}],
-      []
-    ]},
-    "PROMPT: PATCH ElevenLabs": {"main": [[{"node": "PROMPT: Reset + Log", "type": "main", "index": 0}]]},
-    "PROMPT: Reset + Log": {"main": [[{"node": "PROMPT: Confirm", "type": "main", "index": 0}]]},
-
-    "WELCOME: Get Agent": {"main": [[{"node": "WELCOME: PATCH", "type": "main", "index": 0}]]},
-    "WELCOME: PATCH": {"main": [[{"node": "WELCOME: Reset + Log", "type": "main", "index": 0}]]},
-    "WELCOME: Reset + Log": {"main": [[{"node": "WELCOME: Confirm", "type": "main", "index": 0}]]},
-
-    "KB: Get Agent": {"main": [[{"node": "KB: Create Doc", "type": "main", "index": 0}]]},
-    "KB: Create Doc": {"main": [[{"node": "KB: Attach to Agent", "type": "main", "index": 0}]]},
-    "KB: Attach to Agent": {"main": [[{"node": "KB: Reset + Log", "type": "main", "index": 0}]]},
-    "KB: Reset + Log": {"main": [[{"node": "KB: Confirm", "type": "main", "index": 0}]]},
-
-    "ADDAGENT: Validate": {"main": [[{"node": "ADDAGENT: Insert", "type": "main", "index": 0}]]},
-    "ADDAGENT: Insert": {"main": [[{"node": "ADDAGENT: Confirm", "type": "main", "index": 0}]]},
-
-    "CB: Answer": {"main": [[{"node": "CB: Route Action", "type": "main", "index": 0}]]},
-    "CB: Route Action": {"main": [
-      [{"node": "LIST: Get Agents", "type": "main", "index": 0}],
-      [{"node": "SELECT: Set Selected", "type": "main", "index": 0}],
-      [{"node": "EDIT_PROMPT: Set State", "type": "main", "index": 0}],
-      [{"node": "EDIT_WELCOME: Set State", "type": "main", "index": 0}],
-      [{"node": "EDIT_KB: Set State", "type": "main", "index": 0}],
-      [{"node": "ADD: Set State", "type": "main", "index": 0}],
-      [{"node": "Send Main Menu", "type": "main", "index": 0}]
-    ]},
-
-    "LIST: Get Agents": {"main": [[{"node": "LIST: Build Keyboard", "type": "main", "index": 0}]]},
-    "LIST: Build Keyboard": {"main": [[{"node": "LIST: Send", "type": "main", "index": 0}]]},
-
-    "SELECT: Set Selected": {"main": [[{"node": "SELECT: Get Agent", "type": "main", "index": 0}]]},
-    "SELECT: Get Agent": {"main": [[{"node": "SELECT: Send Agent Menu", "type": "main", "index": 0}]]},
-
-    "EDIT_PROMPT: Set State": {"main": [[{"node": "EDIT_PROMPT: Ask", "type": "main", "index": 0}]]},
-    "EDIT_WELCOME: Set State": {"main": [[{"node": "EDIT_WELCOME: Ask", "type": "main", "index": 0}]]},
-    "EDIT_KB: Set State": {"main": [[{"node": "EDIT_KB: Ask", "type": "main", "index": 0}]]},
-    "ADD: Set State": {"main": [[{"node": "ADD: Ask", "type": "main", "index": 0}]]}
+    "TG Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Update": {
+      "main": [
+        [
+          {
+            "node": "Route by Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Type": {
+      "main": [
+        [
+          {
+            "node": "MSG: Route",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CB: Answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MSG: Route": {
+      "main": [
+        [
+          {
+            "node": "/start: Upsert User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TXT: Get Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/start: Upsert User": {
+      "main": [
+        [
+          {
+            "node": "/start: Init Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/start: Init Session": {
+      "main": [
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TXT: Get Session": {
+      "main": [
+        [
+          {
+            "node": "TXT: Route FSM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TXT: Route FSM": {
+      "main": [
+        [
+          {
+            "node": "PROMPT: Get Agent (ownership)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WELCOME: Get Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "KB: Get Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ADDAGENT: Validate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROMPT: Get Agent (ownership)": {
+      "main": [
+        [
+          {
+            "node": "PROMPT: Agent found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROMPT: Agent found?": {
+      "main": [
+        [
+          {
+            "node": "PROMPT: PATCH ElevenLabs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "PROMPT: PATCH ElevenLabs": {
+      "main": [
+        [
+          {
+            "node": "PROMPT: Reset + Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROMPT: Reset + Log": {
+      "main": [
+        [
+          {
+            "node": "PROMPT: Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WELCOME: Get Agent": {
+      "main": [
+        [
+          {
+            "node": "WELCOME: PATCH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WELCOME: PATCH": {
+      "main": [
+        [
+          {
+            "node": "WELCOME: Reset + Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WELCOME: Reset + Log": {
+      "main": [
+        [
+          {
+            "node": "WELCOME: Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KB: Get Agent": {
+      "main": [
+        [
+          {
+            "node": "KB: Create Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KB: Create Doc": {
+      "main": [
+        [
+          {
+            "node": "KB: Attach to Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KB: Attach to Agent": {
+      "main": [
+        [
+          {
+            "node": "KB: Reset + Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KB: Reset + Log": {
+      "main": [
+        [
+          {
+            "node": "KB: Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADDAGENT: Validate": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADDAGENT: Insert": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CB: Answer": {
+      "main": [
+        [
+          {
+            "node": "CB: Route Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CB: Route Action": {
+      "main": [
+        [
+          {
+            "node": "LIST: Get Agents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SELECT: Set Selected",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EDIT_PROMPT: Set State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EDIT_WELCOME: Set State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EDIT_KB: Set State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ADD: Set State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST: Get Agents": {
+      "main": [
+        [
+          {
+            "node": "LIST: Build Keyboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST: Build Keyboard": {
+      "main": [
+        [
+          {
+            "node": "LIST: Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SELECT: Set Selected": {
+      "main": [
+        [
+          {
+            "node": "SELECT: Get Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SELECT: Get Agent": {
+      "main": [
+        [
+          {
+            "node": "SELECT: Send Agent Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDIT_PROMPT: Set State": {
+      "main": [
+        [
+          {
+            "node": "EDIT_PROMPT: Ask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDIT_WELCOME: Set State": {
+      "main": [
+        [
+          {
+            "node": "EDIT_WELCOME: Ask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDIT_KB: Set State": {
+      "main": [
+        [
+          {
+            "node": "EDIT_KB: Ask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADD: Set State": {
+      "main": [
+        [
+          {
+            "node": "ADD: Ask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "active": false,
-  "settings": {"executionOrder": "v1"},
+  "settings": {
+    "executionOrder": "v1"
+  },
   "tags": [],
   "meta": {}
 }
