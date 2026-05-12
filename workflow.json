@@ -1,5 +1,11 @@
 {
+  "updatedAt": "2026-05-12T22:22:27.970Z",
+  "createdAt": "2026-05-12T15:04:33.609Z",
+  "id": "72ad4b58019c4be3",
   "name": "ElevenLabs Voice Agent Bot",
+  "description": null,
+  "active": true,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
@@ -17,7 +23,13 @@
         240,
         400
       ],
-      "webhookId": "elevenlabs-bot-webhook"
+      "webhookId": "elevenlabs-bot-webhook",
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -150,6 +162,72 @@
                 },
                 "conditions": [
                   {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "/help",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "help"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "/add",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "add"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "/cancel",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancel"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
                     "leftValue": "={{ $json.is_command }}",
                     "rightValue": false,
                     "operator": {
@@ -191,7 +269,13 @@
       "position": [
         1120,
         100
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -208,7 +292,13 @@
       "position": [
         1340,
         100
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -252,7 +342,14 @@
       "position": [
         1560,
         100
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "f781804c-7ab6-4faf-88db-01b7ceb8a64d"
     },
     {
       "parameters": {
@@ -269,7 +366,13 @@
       "position": [
         1120,
         360
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -393,25 +496,33 @@
       "position": [
         1560,
         200
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "loose"
+            "caseSensitive": true,
+            "typeValidation": "strict"
           },
           "conditions": [
             {
-              "leftValue": "={{ $json.elevenlabs_agent_id }}",
+              "leftValue": "={{ $json.id }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
                 "operation": "exists",
                 "singleValue": true
-              }
+              },
+              "id": "condition-1778624545957-3loofwwcv"
             }
           ],
           "combinator": "and"
@@ -460,7 +571,13 @@
       "position": [
         2000,
         160
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
     },
     {
       "parameters": {
@@ -477,7 +594,13 @@
       "position": [
         2220,
         160
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -492,7 +615,14 @@
       "position": [
         2440,
         160
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "ccf9303c-2781-4df1-a62b-904571d36ac5"
     },
     {
       "parameters": {
@@ -509,7 +639,13 @@
       "position": [
         1560,
         360
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -538,7 +674,13 @@
       "position": [
         1780,
         360
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
     },
     {
       "parameters": {
@@ -555,7 +697,13 @@
       "position": [
         2000,
         360
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -569,7 +717,14 @@
       "position": [
         2220,
         360
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "363072b4-953c-47af-8a45-a680d7ee7aa6"
     },
     {
       "parameters": {
@@ -586,7 +741,13 @@
       "position": [
         1560,
         520
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -615,7 +776,13 @@
       "position": [
         1780,
         520
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
     },
     {
       "parameters": {
@@ -644,7 +811,13 @@
       "position": [
         2000,
         520
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
     },
     {
       "parameters": {
@@ -661,7 +834,13 @@
       "position": [
         2220,
         520
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -675,38 +854,64 @@
       "position": [
         2440,
         520
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "0ec6cf47-260a-49cb-a4a4-ab977a5e16d8"
     },
     {
       "parameters": {
-        "method": "GET",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $('Parse Update').item.json.text }}",
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/convai/agents/create",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $('Parse Update').item.json.text, conversation_config: {} }) }}",
         "options": {
           "response": {
             "response": {
               "neverError": true,
-              "responseFormat": "json"
+              "responseFormat": "json",
+              "fullResponse": false
             }
           }
         }
       },
       "id": "node-addagent-validate",
-      "name": "ADDAGENT: Validate",
+      "name": "ADDAGENT: Create at ElevenLabs",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
         1560,
         680
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO user_agents (user_id, elevenlabs_agent_id, agent_name)\nSELECT u.id, $1, $2\nFROM users u\nWHERE u.telegram_user_id = $3\nON DUPLICATE KEY UPDATE is_active = 1, agent_name = VALUES(agent_name);\n\nUPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $4;",
+        "query": "INSERT INTO user_agents (user_id, elevenlabs_agent_id, agent_name)\nSELECT u.id, $1, $2 FROM users u WHERE u.telegram_user_id = $3\nON DUPLICATE KEY UPDATE is_active = 1, agent_name = VALUES(agent_name);\n\nUPDATE user_sessions SET current_action='idle' WHERE telegram_user_id=$4;",
         "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.text, ($json.name || 'Agent ' + $('Parse Update').item.json.text.slice(0,8)), $('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id] }}"
+          "queryReplacement": "={{ [$('ADDAGENT: Create at ElevenLabs').item.json.agent_id, $('Parse Update').item.json.text, $('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id] }}"
         }
       },
       "id": "node-addagent-insert",
@@ -716,12 +921,18 @@
       "position": [
         1780,
         680
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=✅ Агент добавлен.\n\nИспользуй /menu чтобы выбрать его и редактировать."
+        "text": "=✅ Агент создан в ElevenLabs!\n\nИмя: {{ $('Parse Update').item.json.text }}\nID: `{{ $('ADDAGENT: Create at ElevenLabs').item.json.agent_id }}`\n\nИспользуй /menu чтобы выбрать его и отредактировать промпт, welcome или базу знаний."
       },
       "id": "node-addagent-confirm",
       "name": "ADDAGENT: Confirm",
@@ -730,7 +941,14 @@
       "position": [
         2000,
         680
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "7fea124b-384c-4fe1-a3e0-7e9535ca7eea"
     },
     {
       "parameters": {
@@ -747,7 +965,14 @@
       "position": [
         900,
         600
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "46c64d02-487e-495c-9707-0ce92f56b957"
     },
     {
       "parameters": {
@@ -935,11 +1160,17 @@
       "position": [
         1340,
         480
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "// Aggregate all agent rows into a single inline keyboard.\nconst rows = $input.all().map(i => i.json).filter(r => r.id);\nconst keyboard = rows.map(r => [{\n  text: '🎙 ' + (r.agent_name || r.elevenlabs_agent_id),\n  callback_data: 'select:' + r.id\n}]);\nkeyboard.push([{ text: '⬅ Назад', callback_data: 'menu' }]);\n\nconst text = rows.length\n  ? 'Твои агенты — выбери для редактирования:'\n  : 'У тебя пока нет агентов. Нажми «Добавить агента».';\n\nreturn [{ json: { text, keyboard } }];"
+        "jsCode": "// Build Telegram Bot API reply_markup directly (n8n Telegram node v1.2 cannot evaluate dynamic inlineKeyboard.rows).\nconst rows = $input.all().map(i => i.json).filter(r => r.id);\nconst inline_keyboard = rows.map(r => [{\n  text: '🎙 ' + (r.agent_name || r.elevenlabs_agent_id),\n  callback_data: 'select:' + r.id\n}]);\ninline_keyboard.push([{ text: '⬅ Назад', callback_data: 'menu' }]);\n\nconst text = rows.length\n  ? 'Твои агенты — выбери для редактирования:'\n  : 'У тебя пока нет агентов. Нажми «Добавить агента».';\n\nconst chat_id = $('Parse Update').first().json.chat_id;\n\nreturn [{ json: { chat_id, text, reply_markup: { inline_keyboard } } }];"
       },
       "id": "node-list-build-kb",
       "name": "LIST: Build Keyboard",
@@ -947,25 +1178,6 @@
       "typeVersion": 2,
       "position": [
         1560,
-        480
-      ]
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "={{ $json.text }}",
-        "additionalFields": {},
-        "replyMarkup": "inlineKeyboard",
-        "inlineKeyboard": {
-          "rows": "={{ $json.keyboard.map(row => ({ row: { buttons: row.map(b => ({ text: b.text, additionalFields: { callback_data: b.callback_data } })) } })) }}"
-        }
-      },
-      "id": "node-list-send",
-      "name": "LIST: Send",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1780,
         480
       ]
     },
@@ -984,7 +1196,13 @@
       "position": [
         1340,
         640
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -1001,7 +1219,13 @@
       "position": [
         1560,
         640
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -1069,7 +1293,14 @@
       "position": [
         1780,
         640
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "a79b4b7a-9a8a-41fa-8d5d-5d7e15af70f0"
     },
     {
       "parameters": {
@@ -1086,7 +1317,13 @@
       "position": [
         1340,
         760
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -1100,7 +1337,14 @@
       "position": [
         1560,
         760
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "6e4fc7d9-d5ec-4c24-849e-e29087869fe6"
     },
     {
       "parameters": {
@@ -1117,7 +1361,13 @@
       "position": [
         1340,
         860
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -1131,7 +1381,14 @@
       "position": [
         1560,
         860
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "68e46558-d5a7-4c38-8a15-ad88d467dbef"
     },
     {
       "parameters": {
@@ -1148,7 +1405,13 @@
       "position": [
         1340,
         960
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
@@ -1162,7 +1425,14 @@
       "position": [
         1560,
         960
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "63d633b6-0a60-4fab-be4e-110cbac1f318"
     },
     {
       "parameters": {
@@ -1179,12 +1449,18 @@
       "position": [
         1340,
         1060
-      ]
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "➕ Пришли ID агента ElevenLabs (можно скопировать в кабинете elevenlabs.io → Conversational AI → Agent → Settings)."
+        "text": "➕ Как назвать нового агента?\n\nПришли имя — я создам агента в ElevenLabs автоматически."
       },
       "id": "node-add-ask",
       "name": "ADD: Ask",
@@ -1193,7 +1469,209 @@
       "position": [
         1560,
         1060
-      ]
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "c9518687-7f2f-4a39-bff2-07f653c23b3d"
+    },
+    {
+      "id": "node-addagent-created-ok",
+      "name": "ADDAGENT: Created OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1720,
+        680
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.agent_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              },
+              "id": "condition-1778624545957-07ce18mft"
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "node-addagent-log-success",
+      "name": "ADDAGENT: Log Success",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1960,
+        600
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, details)\nSELECT $1, ua.id, 'create_agent', 'success',\n  JSON_OBJECT('agent_id', $2, 'name', $3)\nFROM user_agents ua\nWHERE ua.elevenlabs_agent_id = $2\nORDER BY ua.id DESC LIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('ADDAGENT: Create at ElevenLabs').item.json.agent_id, $('Parse Update').item.json.text] }}"
+        }
+      },
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
+    },
+    {
+      "id": "node-addagent-log-error",
+      "name": "ADDAGENT: Log Error",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1960,
+        780
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, error_message)\nVALUES ($1, NULL, 'create_agent', 'error', $2);\n\nUPDATE user_sessions SET current_action='idle' WHERE telegram_user_id=$3;",
+        "options": {
+          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json).slice(0, 500), $('Parse Update').item.json.telegram_user_id] }}"
+        }
+      },
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
+    },
+    {
+      "id": "node-addagent-error-reply",
+      "name": "ADDAGENT: Error Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2180,
+        780
+      ],
+      "parameters": {
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "=❌ Не получилось создать агента в ElevenLabs.\n\n{{ ($('ADDAGENT: Create at ElevenLabs').item.json && $('ADDAGENT: Create at ElevenLabs').item.json.detail) ? ('Причина: ' + JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json.detail).slice(0,300)) : 'Попробуй другое имя или повтори позже.' }}\n\nЧтобы повторить — нажми «➕ Добавить агента» в /menu."
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "209deda8-2694-494d-bf1d-89d89e0293a5"
+    },
+    {
+      "id": "node-msg-help",
+      "name": "MSG: Help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        540
+      ],
+      "parameters": {
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "=🤖 Я помогаю управлять голосовыми агентами ElevenLabs через Telegram.\n\n📋 *Команды*\n/start — главное меню\n/menu — список твоих агентов\n/add — создать нового агента\n/cancel — отменить ввод\n/help — эта справка\n\n🚀 *Как начать*\n1\\. /add → пришли имя → я создам агента в ElevenLabs\n2\\. /menu → выбери агента → отредактируй промпт, приветствие или базу знаний\n\n🎙 *Что можно редактировать у агента*\n• *Системный промпт* — поведение и тон\n• *Welcome\\-сообщение* — что агент говорит первым\n• *База знаний* — текст\\-документ, к которому агент обращается\n\n💡 *ID* агента \\(`agent_xxx...`\\) — техническое имя из ElevenLabs\\.\n*Имя* — то, что ты видишь в /menu\\.",
+        "additionalFields": {
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "a41c11b9-60bf-451d-9026-f92439c8c05c"
+    },
+    {
+      "id": "node-msg-cancel-update",
+      "name": "MSG: Cancel Update",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        880,
+        740
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE user_sessions SET current_action='idle', selected_agent_id=NULL WHERE telegram_user_id=$1;",
+        "options": {
+          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+        }
+      },
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
+    },
+    {
+      "id": "node-msg-cancel-reply",
+      "name": "MSG: Cancel Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1100,
+        740
+      ],
+      "parameters": {
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "✅ Действие отменено. Открой /menu или /start."
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "9196d4a9-5f16-4b2b-a771-e283b5084e87"
+    },
+    {
+      "id": "75600e82-50a8-40b8-a029-07ae4af6d218",
+      "name": "LIST: Send",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        480
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ chat_id: $json.chat_id, text: $json.text, reply_markup: $json.reply_markup }) }}",
+        "options": {}
+      }
     }
   ],
   "connections": {
@@ -1249,6 +1727,27 @@
         [
           {
             "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MSG: Help",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ADD: Set State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MSG: Cancel Update",
             "type": "main",
             "index": 0
           }
@@ -1320,7 +1819,7 @@
         ],
         [
           {
-            "node": "ADDAGENT: Validate",
+            "node": "ADDAGENT: Create at ElevenLabs",
             "type": "main",
             "index": 0
           }
@@ -1346,8 +1845,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "PROMPT: PATCH ElevenLabs": {
@@ -1449,22 +1947,11 @@
         ]
       ]
     },
-    "ADDAGENT: Validate": {
-      "main": [
-        [
-          {
-            "node": "ADDAGENT: Insert",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "ADDAGENT: Insert": {
       "main": [
         [
           {
-            "node": "ADDAGENT: Confirm",
+            "node": "ADDAGENT: Log Success",
             "type": "main",
             "index": 0
           }
@@ -1546,17 +2033,6 @@
         ]
       ]
     },
-    "LIST: Build Keyboard": {
-      "main": [
-        [
-          {
-            "node": "LIST: Send",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "SELECT: Set Selected": {
       "main": [
         [
@@ -1622,12 +2098,2304 @@
           }
         ]
       ]
+    },
+    "ADDAGENT: Create at ElevenLabs": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Created OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADDAGENT: Created OK?": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Insert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ADDAGENT: Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADDAGENT: Log Success": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Confirm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADDAGENT: Log Error": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Error Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MSG: Cancel Update": {
+      "main": [
+        [
+          {
+            "node": "MSG: Cancel Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIST: Build Keyboard": {
+      "main": [
+        [
+          {
+            "node": "LIST: Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
+  "staticData": null,
+  "meta": {},
+  "pinData": null,
+  "versionId": "042e54fd-dc3d-4827-8f31-f9afb0ffc278",
+  "activeVersionId": "042e54fd-dc3d-4827-8f31-f9afb0ffc278",
+  "versionCounter": 20,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-12T14:21:55.187Z",
+      "createdAt": "2026-05-12T14:21:55.187Z",
+      "role": "workflow:owner",
+      "workflowId": "72ad4b58019c4be3",
+      "projectId": "LAO1LMgALPsO39Wu",
+      "project": {
+        "updatedAt": "2026-05-11T20:37:08.750Z",
+        "createdAt": "2026-05-11T20:29:16.845Z",
+        "id": "LAO1LMgALPsO39Wu",
+        "name": "Саша Бордо <bordoaleksandr8800@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "5bc628a5-5586-4837-93bb-151472f944a9"
+      }
+    }
+  ],
   "tags": [],
-  "meta": {}
+  "activeVersion": {
+    "updatedAt": "2026-05-12T22:22:28.015Z",
+    "createdAt": "2026-05-12T22:22:28.015Z",
+    "versionId": "042e54fd-dc3d-4827-8f31-f9afb0ffc278",
+    "workflowId": "72ad4b58019c4be3",
+    "nodes": [
+      {
+        "parameters": {
+          "updates": [
+            "message",
+            "callback_query"
+          ],
+          "additionalFields": {}
+        },
+        "id": "node-tg-trigger",
+        "name": "TG Trigger",
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          400
+        ],
+        "webhookId": "elevenlabs-bot-webhook",
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Normalize Telegram update into a flat object for downstream routing.\nconst raw = $input.item.json;\nconst msg = raw.message;\nconst cb = raw.callback_query;\n\nlet kind = 'other';\nlet user, chat_id, text, callback_data, callback_id, message_id;\n\nif (cb) {\n  kind = 'callback_query';\n  user = cb.from;\n  chat_id = cb.message.chat.id;\n  message_id = cb.message.message_id;\n  callback_data = cb.data || '';\n  callback_id = cb.id;\n} else if (msg) {\n  kind = 'message';\n  user = msg.from;\n  chat_id = msg.chat.id;\n  message_id = msg.message_id;\n  text = (msg.text || '').trim();\n}\n\nif (!user) {\n  return [];\n}\n\n// Parse callback_data of form 'action' or 'action:param'\nlet cb_action = '';\nlet cb_param = '';\nif (callback_data) {\n  const idx = callback_data.indexOf(':');\n  if (idx === -1) {\n    cb_action = callback_data;\n  } else {\n    cb_action = callback_data.slice(0, idx);\n    cb_param = callback_data.slice(idx + 1);\n  }\n}\n\nreturn [{\n  json: {\n    kind,\n    telegram_user_id: user.id,\n    username: user.username || null,\n    first_name: user.first_name || null,\n    last_name: user.last_name || null,\n    chat_id,\n    message_id,\n    text: text || '',\n    is_command: text ? text.startsWith('/') : false,\n    command: text && text.startsWith('/') ? text.split(/\\s+/)[0].split('@')[0] : '',\n    callback_data,\n    callback_id,\n    cb_action,\n    cb_param\n  }\n}];"
+        },
+        "id": "node-parse-update",
+        "name": "Parse Update",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          460,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.kind }}",
+                      "rightValue": "message",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "message"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.kind }}",
+                      "rightValue": "callback_query",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "callback"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node-route-type",
+        "name": "Route by Type",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          680,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.command }}",
+                      "rightValue": "/start",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "start"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.command }}",
+                      "rightValue": "/menu",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "menu"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.command }}",
+                      "rightValue": "/help",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "help"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.command }}",
+                      "rightValue": "/add",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "add"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.command }}",
+                      "rightValue": "/cancel",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "cancel"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.is_command }}",
+                      "rightValue": false,
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "text"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node-route-msg",
+        "name": "MSG: Route",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          900,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO users (telegram_user_id, username, first_name, last_name)\nVALUES ($1, $2, $3, $4)\nON DUPLICATE KEY UPDATE\n  username = VALUES(username),\n  first_name = VALUES(first_name),\n  last_name = VALUES(last_name),\n  is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [$json.telegram_user_id, $json.username, $json.first_name, $json.last_name] }}"
+          }
+        },
+        "id": "node-start-upsert-user",
+        "name": "/start: Upsert User",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1120,
+          100
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO user_sessions (telegram_user_id, current_action)\nVALUES ($1, 'idle')\nON DUPLICATE KEY UPDATE current_action = 'idle'",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-start-init-session",
+        "name": "/start: Init Session",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          100
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=Привет, {{ $('Parse Update').item.json.first_name || 'друг' }}! 👋\n\nЯ помогу управлять твоими голосовыми агентами ElevenLabs.\n\nВыбери действие:",
+          "additionalFields": {},
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "🎙 Мои агенты",
+                      "additionalFields": {
+                        "callback_data": "list_agents"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "➕ Добавить агента",
+                      "additionalFields": {
+                        "callback_data": "add_agent"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "id": "node-send-main-menu",
+        "name": "Send Main Menu",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1560,
+          100
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "f781804c-7ab6-4faf-88db-01b7ceb8a64d"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT current_action, selected_agent_db_id\nFROM user_sessions\nWHERE telegram_user_id = $1",
+          "options": {
+            "queryReplacement": "={{ [$json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-txt-get-session",
+        "name": "TXT: Get Session",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1120,
+          360
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.current_action }}",
+                      "rightValue": "awaiting_prompt",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "prompt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.current_action }}",
+                      "rightValue": "awaiting_welcome",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "welcome"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.current_action }}",
+                      "rightValue": "awaiting_kb_text",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "kb"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.current_action }}",
+                      "rightValue": "awaiting_agent_name",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "addagent"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra"
+          }
+        },
+        "id": "node-txt-route-fsm",
+        "name": "TXT: Route FSM",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1340,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-prompt-get-agent",
+        "name": "PROMPT: Get Agent (ownership)",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1560,
+          200
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                },
+                "id": "condition-1778624545957-3loofwwcv"
+              }
+            ],
+            "combinator": "and"
+          }
+        },
+        "id": "node-prompt-if-found",
+        "name": "PROMPT: Agent found?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1780,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $('Parse Update').item.json.text } } } }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json",
+                "fullResponse": false
+              }
+            }
+          }
+        },
+        "id": "node-prompt-patch",
+        "name": "PROMPT: PATCH ElevenLabs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2000,
+          160
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "c99ef9957b674492",
+            "name": "ElevenLabs API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_prompt', 'success');",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('PROMPT: Get Agent (ownership)').item.json.id] }}"
+          }
+        },
+        "id": "node-prompt-reset",
+        "name": "PROMPT: Reset + Log",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          2220,
+          160
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=✅ Промпт агента обновлён.\n\nИспользуй /menu для возврата.",
+          "additionalFields": {}
+        },
+        "id": "node-prompt-confirm",
+        "name": "PROMPT: Confirm",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2440,
+          160
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "ccf9303c-2781-4df1-a62b-904571d36ac5"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-welcome-get-agent",
+        "name": "WELCOME: Get Agent",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1560,
+          360
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $('Parse Update').item.json.text } } }) }}",
+          "options": {}
+        },
+        "id": "node-welcome-patch",
+        "name": "WELCOME: PATCH",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1780,
+          360
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "c99ef9957b674492",
+            "name": "ElevenLabs API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_welcome', 'success');",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('WELCOME: Get Agent').item.json.id] }}"
+          }
+        },
+        "id": "node-welcome-reset",
+        "name": "WELCOME: Reset + Log",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          2000,
+          360
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=✅ Приветственное сообщение обновлено.\n\nИспользуй /menu для возврата."
+        },
+        "id": "node-welcome-confirm",
+        "name": "WELCOME: Confirm",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2220,
+          360
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "363072b4-953c-47af-8a45-a680d7ee7aa6"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-kb-get-agent",
+        "name": "KB: Get Agent",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1560,
+          520
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: $('Parse Update').item.json.text }) }}",
+          "options": {}
+        },
+        "id": "node-kb-create-doc",
+        "name": "KB: Create Doc",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1780,
+          520
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "c99ef9957b674492",
+            "name": "ElevenLabs API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $('KB: Get Agent').item.json.elevenlabs_agent_id }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $json.name, id: $json.id }] } } } }) }}",
+          "options": {}
+        },
+        "id": "node-kb-attach",
+        "name": "KB: Attach to Agent",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2000,
+          520
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "c99ef9957b674492",
+            "name": "ElevenLabs API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_kb', 'success');",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('KB: Get Agent').item.json.id] }}"
+          }
+        },
+        "id": "node-kb-reset",
+        "name": "KB: Reset + Log",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          2220,
+          520
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=✅ База знаний агента обновлена.\n\nИспользуй /menu для возврата."
+        },
+        "id": "node-kb-confirm",
+        "name": "KB: Confirm",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2440,
+          520
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "0ec6cf47-260a-49cb-a4a4-ab977a5e16d8"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.elevenlabs.io/v1/convai/agents/create",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ name: $('Parse Update').item.json.text, conversation_config: {} }) }}",
+          "options": {
+            "response": {
+              "response": {
+                "neverError": true,
+                "responseFormat": "json",
+                "fullResponse": false
+              }
+            }
+          }
+        },
+        "id": "node-addagent-validate",
+        "name": "ADDAGENT: Create at ElevenLabs",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1560,
+          680
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "c99ef9957b674492",
+            "name": "ElevenLabs API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO user_agents (user_id, elevenlabs_agent_id, agent_name)\nSELECT u.id, $1, $2 FROM users u WHERE u.telegram_user_id = $3\nON DUPLICATE KEY UPDATE is_active = 1, agent_name = VALUES(agent_name);\n\nUPDATE user_sessions SET current_action='idle' WHERE telegram_user_id=$4;",
+          "options": {
+            "queryReplacement": "={{ [$('ADDAGENT: Create at ElevenLabs').item.json.agent_id, $('Parse Update').item.json.text, $('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-addagent-insert",
+        "name": "ADDAGENT: Insert",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1780,
+          680
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=✅ Агент создан в ElevenLabs!\n\nИмя: {{ $('Parse Update').item.json.text }}\nID: `{{ $('ADDAGENT: Create at ElevenLabs').item.json.agent_id }}`\n\nИспользуй /menu чтобы выбрать его и отредактировать промпт, welcome или базу знаний."
+        },
+        "id": "node-addagent-confirm",
+        "name": "ADDAGENT: Confirm",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2000,
+          680
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "7fea124b-384c-4fe1-a3e0-7e9535ca7eea"
+      },
+      {
+        "parameters": {
+          "resource": "callback",
+          "operation": "answerQuery",
+          "queryId": "={{ $json.callback_id }}",
+          "results": "",
+          "additionalFields": {}
+        },
+        "id": "node-cb-answer",
+        "name": "CB: Answer",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          900,
+          600
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "46c64d02-487e-495c-9707-0ce92f56b957"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "list_agents",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "list"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "select",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "select"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "edit_prompt",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "edit_prompt"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "edit_welcome",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "edit_welcome"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "edit_kb",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "edit_kb"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "add_agent",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "add"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "loose"
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
+                      "rightValue": "menu",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "menu"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node-cb-route",
+        "name": "CB: Route Action",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1120,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = $1\n  AND ua.is_active = 1\nORDER BY ua.created_at DESC",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-list-agents",
+        "name": "LIST: Get Agents",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          480
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Build Telegram Bot API reply_markup directly (n8n Telegram node v1.2 cannot evaluate dynamic inlineKeyboard.rows).\nconst rows = $input.all().map(i => i.json).filter(r => r.id);\nconst inline_keyboard = rows.map(r => [{\n  text: '🎙 ' + (r.agent_name || r.elevenlabs_agent_id),\n  callback_data: 'select:' + r.id\n}]);\ninline_keyboard.push([{ text: '⬅ Назад', callback_data: 'menu' }]);\n\nconst text = rows.length\n  ? 'Твои агенты — выбери для редактирования:'\n  : 'У тебя пока нет агентов. Нажми «Добавить агента».';\n\nconst chat_id = $('Parse Update').first().json.chat_id;\n\nreturn [{ json: { chat_id, text, reply_markup: { inline_keyboard } } }];"
+        },
+        "id": "node-list-build-kb",
+        "name": "LIST: Build Keyboard",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1560,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions s\nJOIN users u ON u.telegram_user_id = s.telegram_user_id\nJOIN user_agents ua ON ua.user_id = u.id AND ua.id = $1\nSET s.selected_agent_db_id = ua.id, s.current_action = 'idle'\nWHERE s.telegram_user_id = $2 AND ua.is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [parseInt($('Parse Update').item.json.cb_param), $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-select-set",
+        "name": "SELECT: Set Selected",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          640
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nWHERE u.telegram_user_id = $1 AND ua.id = $2 AND ua.is_active = 1",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, parseInt($('Parse Update').item.json.cb_param)] }}"
+          }
+        },
+        "id": "node-select-get",
+        "name": "SELECT: Get Agent",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1560,
+          640
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=🎙 Агент: *{{ $json.agent_name || $json.elevenlabs_agent_id }}*\n\nЧто хочешь изменить?",
+          "additionalFields": {},
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "✏ Изменить промпт",
+                      "additionalFields": {
+                        "callback_data": "edit_prompt"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "👋 Изменить приветствие",
+                      "additionalFields": {
+                        "callback_data": "edit_welcome"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "📚 Обновить базу знаний",
+                      "additionalFields": {
+                        "callback_data": "edit_kb"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "⬅ К списку",
+                      "additionalFields": {
+                        "callback_data": "list_agents"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "id": "node-select-send",
+        "name": "SELECT: Send Agent Menu",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1780,
+          640
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "a79b4b7a-9a8a-41fa-8d5d-5d7e15af70f0"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
+          "options": {
+            "queryReplacement": "={{ ['awaiting_prompt', $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-edit-prompt-state",
+        "name": "EDIT_PROMPT: Set State",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          760
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "✏ Пришли новый текст промпта одним сообщением."
+        },
+        "id": "node-edit-prompt-ask",
+        "name": "EDIT_PROMPT: Ask",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1560,
+          760
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "6e4fc7d9-d5ec-4c24-849e-e29087869fe6"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
+          "options": {
+            "queryReplacement": "={{ ['awaiting_welcome', $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-edit-welcome-state",
+        "name": "EDIT_WELCOME: Set State",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          860
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "👋 Пришли новое приветственное сообщение одним сообщением."
+        },
+        "id": "node-edit-welcome-ask",
+        "name": "EDIT_WELCOME: Ask",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1560,
+          860
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "68e46558-d5a7-4c38-8a15-ad88d467dbef"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
+          "options": {
+            "queryReplacement": "={{ ['awaiting_kb_text', $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-edit-kb-state",
+        "name": "EDIT_KB: Set State",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          960
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "📚 Пришли текст для базы знаний одним сообщением."
+        },
+        "id": "node-edit-kb-ask",
+        "name": "EDIT_KB: Ask",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1560,
+          960
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "63d633b6-0a60-4fab-be4e-110cbac1f318"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2",
+          "options": {
+            "queryReplacement": "={{ ['awaiting_agent_name', $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "id": "node-add-state",
+        "name": "ADD: Set State",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1340,
+          1060
+        ],
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "➕ Как назвать нового агента?\n\nПришли имя — я создам агента в ElevenLabs автоматически."
+        },
+        "id": "node-add-ask",
+        "name": "ADD: Ask",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1560,
+          1060
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "c9518687-7f2f-4a39-bff2-07f653c23b3d"
+      },
+      {
+        "id": "node-addagent-created-ok",
+        "name": "ADDAGENT: Created OK?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1720,
+          680
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.agent_id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                },
+                "id": "condition-1778624545957-07ce18mft"
+              }
+            ],
+            "combinator": "and"
+          }
+        }
+      },
+      {
+        "id": "node-addagent-log-success",
+        "name": "ADDAGENT: Log Success",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1960,
+          600
+        ],
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, details)\nSELECT $1, ua.id, 'create_agent', 'success',\n  JSON_OBJECT('agent_id', $2, 'name', $3)\nFROM user_agents ua\nWHERE ua.elevenlabs_agent_id = $2\nORDER BY ua.id DESC LIMIT 1;",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('ADDAGENT: Create at ElevenLabs').item.json.agent_id, $('Parse Update').item.json.text] }}"
+          }
+        },
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "id": "node-addagent-log-error",
+        "name": "ADDAGENT: Log Error",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1960,
+          780
+        ],
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, error_message)\nVALUES ($1, NULL, 'create_agent', 'error', $2);\n\nUPDATE user_sessions SET current_action='idle' WHERE telegram_user_id=$3;",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json).slice(0, 500), $('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "id": "node-addagent-error-reply",
+        "name": "ADDAGENT: Error Reply",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2180,
+          780
+        ],
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=❌ Не получилось создать агента в ElevenLabs.\n\n{{ ($('ADDAGENT: Create at ElevenLabs').item.json && $('ADDAGENT: Create at ElevenLabs').item.json.detail) ? ('Причина: ' + JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json.detail).slice(0,300)) : 'Попробуй другое имя или повтори позже.' }}\n\nЧтобы повторить — нажми «➕ Добавить агента» в /menu."
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "209deda8-2694-494d-bf1d-89d89e0293a5"
+      },
+      {
+        "id": "node-msg-help",
+        "name": "MSG: Help",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          880,
+          540
+        ],
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "=🤖 Я помогаю управлять голосовыми агентами ElevenLabs через Telegram.\n\n📋 *Команды*\n/start — главное меню\n/menu — список твоих агентов\n/add — создать нового агента\n/cancel — отменить ввод\n/help — эта справка\n\n🚀 *Как начать*\n1\\. /add → пришли имя → я создам агента в ElevenLabs\n2\\. /menu → выбери агента → отредактируй промпт, приветствие или базу знаний\n\n🎙 *Что можно редактировать у агента*\n• *Системный промпт* — поведение и тон\n• *Welcome\\-сообщение* — что агент говорит первым\n• *База знаний* — текст\\-документ, к которому агент обращается\n\n💡 *ID* агента \\(`agent_xxx...`\\) — техническое имя из ElevenLabs\\.\n*Имя* — то, что ты видишь в /menu\\.",
+          "additionalFields": {
+            "parse_mode": "MarkdownV2"
+          }
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "a41c11b9-60bf-451d-9026-f92439c8c05c"
+      },
+      {
+        "id": "node-msg-cancel-update",
+        "name": "MSG: Cancel Update",
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          880,
+          740
+        ],
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE user_sessions SET current_action='idle', selected_agent_id=NULL WHERE telegram_user_id=$1;",
+          "options": {
+            "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+          }
+        },
+        "credentials": {
+          "mySql": {
+            "id": "ec18891bfb714581",
+            "name": "MySQL elevenlabs_bot"
+          }
+        }
+      },
+      {
+        "id": "node-msg-cancel-reply",
+        "name": "MSG: Cancel Reply",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1100,
+          740
+        ],
+        "parameters": {
+          "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+          "text": "✅ Действие отменено. Открой /menu или /start."
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "3c8e9d830c184033",
+            "name": "Telegram Bot"
+          }
+        },
+        "webhookId": "9196d4a9-5f16-4b2b-a771-e283b5084e87"
+      },
+      {
+        "id": "75600e82-50a8-40b8-a029-07ae4af6d218",
+        "name": "LIST: Send",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1780,
+          480
+        ],
+        "parameters": {
+          "method": "POST",
+          "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ chat_id: $json.chat_id, text: $json.text, reply_markup: $json.reply_markup }) }}",
+          "options": {}
+        }
+      }
+    ],
+    "connections": {
+      "TG Trigger": {
+        "main": [
+          [
+            {
+              "node": "Parse Update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Update": {
+        "main": [
+          [
+            {
+              "node": "Route by Type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Route by Type": {
+        "main": [
+          [
+            {
+              "node": "MSG: Route",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "CB: Answer",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MSG: Route": {
+        "main": [
+          [
+            {
+              "node": "/start: Upsert User",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Main Menu",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "MSG: Help",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ADD: Set State",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "MSG: Cancel Update",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "TXT: Get Session",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "/start: Upsert User": {
+        "main": [
+          [
+            {
+              "node": "/start: Init Session",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "/start: Init Session": {
+        "main": [
+          [
+            {
+              "node": "Send Main Menu",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TXT: Get Session": {
+        "main": [
+          [
+            {
+              "node": "TXT: Route FSM",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TXT: Route FSM": {
+        "main": [
+          [
+            {
+              "node": "PROMPT: Get Agent (ownership)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "WELCOME: Get Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "KB: Get Agent",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ADDAGENT: Create at ElevenLabs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PROMPT: Get Agent (ownership)": {
+        "main": [
+          [
+            {
+              "node": "PROMPT: Agent found?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PROMPT: Agent found?": {
+        "main": [
+          [
+            {
+              "node": "PROMPT: PATCH ElevenLabs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PROMPT: PATCH ElevenLabs": {
+        "main": [
+          [
+            {
+              "node": "PROMPT: Reset + Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PROMPT: Reset + Log": {
+        "main": [
+          [
+            {
+              "node": "PROMPT: Confirm",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WELCOME: Get Agent": {
+        "main": [
+          [
+            {
+              "node": "WELCOME: PATCH",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WELCOME: PATCH": {
+        "main": [
+          [
+            {
+              "node": "WELCOME: Reset + Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "WELCOME: Reset + Log": {
+        "main": [
+          [
+            {
+              "node": "WELCOME: Confirm",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KB: Get Agent": {
+        "main": [
+          [
+            {
+              "node": "KB: Create Doc",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KB: Create Doc": {
+        "main": [
+          [
+            {
+              "node": "KB: Attach to Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KB: Attach to Agent": {
+        "main": [
+          [
+            {
+              "node": "KB: Reset + Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KB: Reset + Log": {
+        "main": [
+          [
+            {
+              "node": "KB: Confirm",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADDAGENT: Insert": {
+        "main": [
+          [
+            {
+              "node": "ADDAGENT: Log Success",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CB: Answer": {
+        "main": [
+          [
+            {
+              "node": "CB: Route Action",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CB: Route Action": {
+        "main": [
+          [
+            {
+              "node": "LIST: Get Agents",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "SELECT: Set Selected",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "EDIT_PROMPT: Set State",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "EDIT_WELCOME: Set State",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "EDIT_KB: Set State",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ADD: Set State",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send Main Menu",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "LIST: Get Agents": {
+        "main": [
+          [
+            {
+              "node": "LIST: Build Keyboard",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SELECT: Set Selected": {
+        "main": [
+          [
+            {
+              "node": "SELECT: Get Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SELECT: Get Agent": {
+        "main": [
+          [
+            {
+              "node": "SELECT: Send Agent Menu",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "EDIT_PROMPT: Set State": {
+        "main": [
+          [
+            {
+              "node": "EDIT_PROMPT: Ask",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "EDIT_WELCOME: Set State": {
+        "main": [
+          [
+            {
+              "node": "EDIT_WELCOME: Ask",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "EDIT_KB: Set State": {
+        "main": [
+          [
+            {
+              "node": "EDIT_KB: Ask",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADD: Set State": {
+        "main": [
+          [
+            {
+              "node": "ADD: Ask",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADDAGENT: Create at ElevenLabs": {
+        "main": [
+          [
+            {
+              "node": "ADDAGENT: Created OK?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADDAGENT: Created OK?": {
+        "main": [
+          [
+            {
+              "node": "ADDAGENT: Insert",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "ADDAGENT: Log Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADDAGENT: Log Success": {
+        "main": [
+          [
+            {
+              "node": "ADDAGENT: Confirm",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ADDAGENT: Log Error": {
+        "main": [
+          [
+            {
+              "node": "ADDAGENT: Error Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "MSG: Cancel Update": {
+        "main": [
+          [
+            {
+              "node": "MSG: Cancel Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "LIST: Build Keyboard": {
+        "main": [
+          [
+            {
+              "node": "LIST: Send",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Саша Бордо",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-12T22:22:29.973Z",
+        "id": 7,
+        "workflowId": "72ad4b58019c4be3",
+        "versionId": "042e54fd-dc3d-4827-8f31-f9afb0ffc278",
+        "event": "activated",
+        "userId": "5bc628a5-5586-4837-93bb-151472f944a9"
+      },
+      {
+        "createdAt": "2026-05-12T22:22:29.124Z",
+        "id": 6,
+        "workflowId": "72ad4b58019c4be3",
+        "versionId": "042e54fd-dc3d-4827-8f31-f9afb0ffc278",
+        "event": "deactivated",
+        "userId": "5bc628a5-5586-4837-93bb-151472f944a9"
+      }
+    ]
+  }
 }
