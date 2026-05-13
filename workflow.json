@@ -33,7 +33,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Normalize Telegram update into a flat object for downstream routing.\nconst raw = $input.item.json;\nconst msg = raw.message;\nconst cb = raw.callback_query;\n\nlet kind = 'other';\nlet user, chat_id, text, callback_data, callback_id, message_id;\n\nif (cb) {\n  kind = 'callback_query';\n  user = cb.from;\n  chat_id = cb.message.chat.id;\n  message_id = cb.message.message_id;\n  callback_data = cb.data || '';\n  callback_id = cb.id;\n} else if (msg) {\n  kind = 'message';\n  user = msg.from;\n  chat_id = msg.chat.id;\n  message_id = msg.message_id;\n  text = (msg.text || '').trim();\n}\n\nif (!user) {\n  return [];\n}\n\n// Parse callback_data of form 'action' or 'action:param'\nlet cb_action = '';\nlet cb_param = '';\nif (callback_data) {\n  const idx = callback_data.indexOf(':');\n  if (idx === -1) {\n    cb_action = callback_data;\n  } else {\n    cb_action = callback_data.slice(0, idx);\n    cb_param = callback_data.slice(idx + 1);\n  }\n}\n\nreturn [{\n  json: {\n    kind,\n    telegram_user_id: user.id,\n    username: user.username || null,\n    first_name: user.first_name || null,\n    last_name: user.last_name || null,\n    chat_id,\n    message_id,\n    text: text || '',\n    is_command: text ? text.startsWith('/') : false,\n    command: text && text.startsWith('/') ? text.split(/\\s+/)[0].split('@')[0] : '',\n    callback_data,\n    callback_id,\n    cb_action,\n    cb_param\n  }\n}];"
+        "jsCode": "// Normalize Telegram update into a flat object for downstream routing.\nconst raw = $input.item.json;\nconst msg = raw.message;\nconst cb = raw.callback_query;\n\nlet kind = 'other';\nlet user, chat_id, text, callback_data, callback_id, message_id;\nlet is_voice = false;\nlet voice_file_id = null;\nlet voice_mime = null;\n\nif (cb) {\n  kind = 'callback_query';\n  user = cb.from;\n  chat_id = cb.message.chat.id;\n  message_id = cb.message.message_id;\n  callback_data = cb.data || '';\n  callback_id = cb.id;\n} else if (msg) {\n  kind = 'message';\n  user = msg.from;\n  chat_id = msg.chat.id;\n  message_id = msg.message_id;\n  text = (msg.text || '').trim();\n  if (msg.voice) {\n    is_voice = true;\n    voice_file_id = msg.voice.file_id;\n    voice_mime = msg.voice.mime_type || 'audio/ogg';\n  } else if (msg.audio) {\n    is_voice = true;\n    voice_file_id = msg.audio.file_id;\n    voice_mime = msg.audio.mime_type || 'audio/mpeg';\n  }\n}\n\nif (!user) {\n  return [];\n}\n\n// Parse callback_data of form 'action' or 'action:param'\nlet cb_action = '';\nlet cb_param = '';\nif (callback_data) {\n  const idx = callback_data.indexOf(':');\n  if (idx === -1) {\n    cb_action = callback_data;\n  } else {\n    cb_action = callback_data.slice(0, idx);\n    cb_param = callback_data.slice(idx + 1);\n  }\n}\n\nreturn [{\n  json: {\n    kind,\n    telegram_user_id: user.id,\n    username: user.username || null,\n    first_name: user.first_name || null,\n    last_name: user.last_name || null,\n    chat_id,\n    message_id,\n    text: text || '',\n    is_voice,\n    voice_file_id,\n    voice_mime,\n    is_command: text ? text.startsWith('/') : false,\n    command: text && text.startsWith('/') ? text.split(/\\s+/)[0].split('@')[0] : '',\n    callback_data,\n    callback_id,\n    cb_action,\n    cb_param\n  }\n}];"
       },
       "id": "node-parse-update",
       "name": "Parse Update",
@@ -464,7 +464,7 @@
                 "combinator": "and"
               },
               "renameOutput": true,
-              "outputKey": "addagent"
+              "outputKey": "agent_name"
             }
           ]
         },
@@ -544,8 +544,9 @@
       "parameters": {
         "method": "PATCH",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) } } } }) }}",
+        "specifyBody": "json",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -555,9 +556,6 @@
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $('Parse Update').item.json.text } } } }) }}",
         "options": {
           "response": {
             "response": {
@@ -654,8 +652,9 @@
       "parameters": {
         "method": "PATCH",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) } } }) }}",
+        "specifyBody": "json",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -665,9 +664,6 @@
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $('Parse Update').item.json.text } } }) }}",
         "options": {}
       },
       "id": "node-welcome-patch",
@@ -756,8 +752,9 @@
       "parameters": {
         "method": "POST",
         "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) }) }}",
+        "specifyBody": "json",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -767,9 +764,6 @@
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: $('Parse Update').item.json.text }) }}",
         "options": {}
       },
       "id": "node-kb-create-doc",
@@ -1675,6 +1669,413 @@
         "jsonBody": "={{ JSON.stringify({ chat_id: $json.chat_id, text: $json.text, reply_markup: $json.reply_markup }) }}",
         "options": {}
       }
+    },
+    {
+      "id": "node-ai-get-agents",
+      "name": "AI: Get User Agents",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1340,
+        1180
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(JSON_ARRAYAGG(JSON_OBJECT('id', ua.id, 'name', ua.agent_name, 'elevenlabs_agent_id', ua.elevenlabs_agent_id)), JSON_ARRAY()) AS agents_json FROM user_agents ua JOIN users u ON u.id = ua.user_id WHERE u.telegram_user_id = $1 AND ua.is_active = 1",
+        "options": {
+          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
+        }
+      },
+      "credentials": {
+        "mySql": {
+          "id": "ec18891bfb714581",
+          "name": "MySQL elevenlabs_bot"
+        }
+      }
+    },
+    {
+      "id": "node-ai-is-voice",
+      "name": "AI: Is Voice?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1450,
+        1180
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Parse Update').item.json.is_voice }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "is-voice-1",
+              "typeValidation": "loose"
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "node-ai-get-file-meta",
+      "name": "AI: Get File Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1620,
+        1100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/getFile",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file_id: $('Parse Update').item.json.voice_file_id }) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-ai-download-voice",
+      "name": "AI: Download Voice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1790,
+        1100
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.telegram.org/file/bot{{ $env.TELEGRAM_BOT_TOKEN }}/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "node-ai-encode-audio",
+      "name": "AI: Encode Audio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        1080
+      ],
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst bin = item.binary && item.binary.data;\nlet b64 = '';\nlet mime = 'audio/ogg';\nif (bin) {\n  const buf = await this.helpers.getBinaryDataBuffer(0, 'data');\n  b64 = buf.toString('base64');\n  mime = bin.mimeType || mime;\n}\nif (mime === 'application/octet-stream') mime = 'audio/ogg';\nconst pu = $('Parse Update').first().json;\nreturn [{ json: { audio_b64: b64, audio_mime: mime, telegram_user_id: pu.telegram_user_id, chat_id: pu.chat_id } }];"
+      }
+    },
+    {
+      "id": "node-ai-transcribe",
+      "name": "AI: Transcribe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2140,
+        1080
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{ $env.GOOGLE_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ system_instruction: { parts: [{ text: 'Transcribe the user audio. Return ONLY the transcript text, no quotes, no markdown, no commentary.' }] }, contents: [{ parts: [{ inline_data: { mime_type: $json.audio_mime, data: $json.audio_b64 } }] }], generationConfig: { temperature: 0 } }) }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-build-agent-context",
+      "name": "Build Agent Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        1180
+      ],
+      "parameters": {
+        "jsCode": "const pu = $('Parse Update').first().json;\nconst row = $('AI: Get User Agents').first().json;\nlet agents = [];\ntry { agents = (typeof row.agents_json === 'string') ? JSON.parse(row.agents_json) : (row.agents_json || []); } catch(e) {}\n\nlet userText = (pu.text || '').trim();\n\nif (pu.is_voice) {\n  try {\n    const up = $input.first().json;\n    const t = up && up.candidates && up.candidates[0] && up.candidates[0].content && up.candidates[0].content.parts && up.candidates[0].content.parts[0] && up.candidates[0].content.parts[0].text;\n    if (t) userText = String(t).trim();\n  } catch (e) {}\n}\n\nconst agentsList = agents.length\n  ? agents.map(a => `- ${a.name} (elevenlabs_id=${a.elevenlabs_agent_id})`).join('\\n')\n  : '(none yet — user can use /add to create one)';\n\nconst systemMessage = `You are an AI assistant inside a Telegram bot. You help the user manage their ElevenLabs Conversational AI voice agents.\n\nEach agent has three editable fields:\n- prompt: system prompt defining behavior, role, personality\n- welcome (first_message): the first message the agent says when a conversation starts\n- knowledge_base: text documents the agent can reference during conversations\n\nThe user owns these agents:\n${agentsList}\n\nYou have these tools:\n- get_agent_config(agentId): get current prompt, welcome message, knowledge base of an agent\n- update_agent_prompt(agentId, newPrompt): replace the agent's system prompt\n- update_agent_welcome(agentId, newFirstMessage): replace the agent's welcome message\n- create_knowledge_doc(docName, docText): create a knowledge document, returns its document id\n- attach_knowledge_to_agent(agentId, docId, docName): attach a knowledge doc to an agent\n\nRules:\n- agentId must be a value from the agent list above (the elevenlabs_id, starts with \"agent_\"). Never invent IDs.\n- To replace the knowledge base: call create_knowledge_doc first to get a docId, then call attach_knowledge_to_agent.\n- If the user does not name an agent and owns several, ask which one. If only one, use it.\n- Respond in the user's language. Be concise. After a successful update, confirm in one short sentence.`;\n\nreturn [{ json: { user_text: userText, system_message: systemMessage, chat_id: pu.chat_id, telegram_user_id: pu.telegram_user_id } }];"
+      }
+    },
+    {
+      "id": "node-ai-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2540,
+        1180
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.user_text }}",
+        "options": {
+          "systemMessage": "={{ $json.system_message }}",
+          "maxIterations": 8
+        }
+      }
+    },
+    {
+      "id": "node-gemini-chat-model",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2380,
+        1420
+      ],
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "v7J9zcGtKqsLT1No",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "id": "node-simple-memory",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2540,
+        1420
+      ],
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Parse Update').item.json.chat_id }}",
+        "contextWindowLength": 10
+      }
+    },
+    {
+      "id": "node-tool-get-config",
+      "name": "Tool: get_agent_config",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        2700,
+        1420
+      ],
+      "parameters": {
+        "toolDescription": "Fetch the current configuration of a specific ElevenLabs voice agent. Returns the current system prompt, first_message (welcome), voice and attached knowledge base.",
+        "method": "GET",
+        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "optimizeResponse": false
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "id": "node-tool-update-prompt",
+      "name": "Tool: update_agent_prompt",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        2860,
+        1420
+      ],
+      "parameters": {
+        "toolDescription": "Replace the system prompt (behavior/personality/role) of a specific ElevenLabs voice agent.",
+        "method": "PATCH",
+        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $fromAI('newPrompt', 'The new system prompt text to set on the agent') } } } }) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "id": "node-tool-update-welcome",
+      "name": "Tool: update_agent_welcome",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        3020,
+        1420
+      ],
+      "parameters": {
+        "toolDescription": "Replace the welcome message (first_message) of a specific ElevenLabs voice agent. This is what the agent says first when a conversation starts.",
+        "method": "PATCH",
+        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $fromAI('newFirstMessage', 'The new welcome message text to set on the agent') } } }) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "id": "node-tool-create-kb-doc",
+      "name": "Tool: create_knowledge_doc",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        3180,
+        1420
+      ],
+      "parameters": {
+        "toolDescription": "Create a new knowledge document in ElevenLabs from plain text. Returns the document id which must then be attached to an agent using attach_knowledge_to_agent. Call this BEFORE attach_knowledge_to_agent.",
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $fromAI('docName', 'Short human-readable name for the document'), text: $fromAI('docText', 'The full text content of the document') }) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "id": "node-tool-attach-kb",
+      "name": "Tool: attach_knowledge_to_agent",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        3340,
+        1420
+      ],
+      "parameters": {
+        "toolDescription": "Attach a previously-created knowledge document to a specific ElevenLabs voice agent. Use after create_knowledge_doc.",
+        "method": "PATCH",
+        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $fromAI('docName', 'Document name'), id: $fromAI('docId', 'The document id returned from create_knowledge_doc') }] } } } }) }}"
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c99ef9957b674492",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "id": "node-send-agent-reply",
+      "name": "Send Agent Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2760,
+        1180
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "3c8e9d830c184033",
+          "name": "Telegram Bot"
+        }
+      },
+      "webhookId": "537a85d2-4ec7-4d64-b298-638b57533d64"
     }
   ],
   "connections": {
@@ -1823,6 +2224,13 @@
         [
           {
             "node": "ADDAGENT: Create at ElevenLabs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Get User Agents",
             "type": "main",
             "index": 0
           }
@@ -2170,6 +2578,178 @@
           {
             "node": "LIST: Send",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Get User Agents": {
+      "main": [
+        [
+          {
+            "node": "AI: Is Voice?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Is Voice?": {
+      "main": [
+        [
+          {
+            "node": "AI: Get File Meta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Agent Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Get File Meta": {
+      "main": [
+        [
+          {
+            "node": "AI: Download Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Download Voice": {
+      "main": [
+        [
+          {
+            "node": "AI: Encode Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Encode Audio": {
+      "main": [
+        [
+          {
+            "node": "AI: Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Build Agent Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Agent Context": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: get_agent_config": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: update_agent_prompt": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: update_agent_welcome": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: create_knowledge_doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: attach_knowledge_to_agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
