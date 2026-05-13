@@ -544,9 +544,11 @@
       "parameters": {
         "method": "PATCH",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) } } } }) }}",
         "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $('Parse Update').item.json.text } } } }) }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -652,9 +654,11 @@
       "parameters": {
         "method": "PATCH",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) } } }) }}",
         "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $('Parse Update').item.json.text } } }) }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -752,9 +756,11 @@
       "parameters": {
         "method": "POST",
         "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
-        "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: ($('AI: Extract').item?.json?.new_value ?? $('Parse Update').item.json.text) }) }}",
         "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: $('Parse Update').item.json.text }) }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -785,8 +791,11 @@
       "parameters": {
         "method": "PATCH",
         "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $('KB: Get Agent').item.json.elevenlabs_agent_id }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $json.name, id: $json.id }] } } } }) }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -796,9 +805,6 @@
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $json.name, id: $json.id }] } } } }) }}",
         "options": {}
       },
       "id": "node-kb-attach",
@@ -1890,170 +1896,6 @@
       }
     },
     {
-      "id": "node-tool-get-config",
-      "name": "Tool: get_agent_config",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [
-        2700,
-        1420
-      ],
-      "parameters": {
-        "toolDescription": "Fetch the current configuration of a specific ElevenLabs voice agent. Returns the current system prompt, first_message (welcome), voice and attached knowledge base.",
-        "method": "GET",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "optimizeResponse": false
-      },
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "id": "node-tool-update-prompt",
-      "name": "Tool: update_agent_prompt",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [
-        2860,
-        1420
-      ],
-      "parameters": {
-        "toolDescription": "Replace the system prompt (behavior/personality/role) of a specific ElevenLabs voice agent.",
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $fromAI('newPrompt', 'The new system prompt text to set on the agent') } } } }) }}"
-      },
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "id": "node-tool-update-welcome",
-      "name": "Tool: update_agent_welcome",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [
-        3020,
-        1420
-      ],
-      "parameters": {
-        "toolDescription": "Replace the welcome message (first_message) of a specific ElevenLabs voice agent. This is what the agent says first when a conversation starts.",
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $fromAI('newFirstMessage', 'The new welcome message text to set on the agent') } } }) }}"
-      },
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "id": "node-tool-create-kb-doc",
-      "name": "Tool: create_knowledge_doc",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [
-        3180,
-        1420
-      ],
-      "parameters": {
-        "toolDescription": "Create a new knowledge document in ElevenLabs from plain text. Returns the document id which must then be attached to an agent using attach_knowledge_to_agent. Call this BEFORE attach_knowledge_to_agent.",
-        "method": "POST",
-        "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ name: $fromAI('docName', 'Short human-readable name for the document'), text: $fromAI('docText', 'The full text content of the document') }) }}"
-      },
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "id": "node-tool-attach-kb",
-      "name": "Tool: attach_knowledge_to_agent",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [
-        3340,
-        1420
-      ],
-      "parameters": {
-        "toolDescription": "Attach a previously-created knowledge document to a specific ElevenLabs voice agent. Use after create_knowledge_doc.",
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $fromAI('agentId', 'ElevenLabs agent id, starts with agent_') }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $fromAI('docName', 'Document name'), id: $fromAI('docId', 'The document id returned from create_knowledge_doc') }] } } } }) }}"
-      },
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
       "id": "node-send-agent-reply",
       "name": "Send Agent Reply",
       "type": "n8n-nodes-base.telegram",
@@ -2067,7 +1909,10 @@
         "operation": "sendMessage",
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "={{ $json.output }}",
-        "additionalFields": {}
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
       },
       "credentials": {
         "telegramApi": {
@@ -2076,6 +1921,101 @@
         }
       },
       "webhookId": "537a85d2-4ec7-4d64-b298-638b57533d64"
+    },
+    {
+      "id": "tool-get-config-code",
+      "name": "Tool: get_agent_config",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        2700,
+        1420
+      ],
+      "parameters": {
+        "name": "get_agent_config",
+        "description": "Fetch current configuration of a specific ElevenLabs voice agent. Returns its current system prompt, first_message (welcome) and attached knowledge base. Parameter agentId is the ElevenLabs id (starts with agent_), pick it from the agent list in the system prompt.",
+        "language": "javaScript",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst agentId = args.agentId;\nconst res = await this.helpers.httpRequest({\n  method: 'GET',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY },\n  json: true,\n});\nconst cfg = (res.conversation_config && res.conversation_config.agent) || {};\nconst out = {\n  prompt: (cfg.prompt && cfg.prompt.prompt) || '',\n  first_message: cfg.first_message || '',\n  knowledge_base: (cfg.prompt && cfg.prompt.knowledge_base) || [],\n};\nreturn JSON.stringify(out);",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id (starts with agent_) — pick one from the agent list in the system prompt\" }\n  },\n  \"required\": [\"agentId\"]\n}"
+      }
+    },
+    {
+      "id": "tool-update-prompt-code",
+      "name": "Tool: update_agent_prompt",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        2860,
+        1420
+      ],
+      "parameters": {
+        "name": "update_agent_prompt",
+        "description": "Replace the system prompt (behavior/personality/role) of a specific ElevenLabs voice agent. Parameters: agentId — agent's ElevenLabs id from the list. newPrompt — the literal new system prompt text.",
+        "language": "javaScript",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { prompt: args.newPrompt } } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"newPrompt\": { \"type\": \"string\", \"description\": \"The new system prompt text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newPrompt\"]\n}"
+      }
+    },
+    {
+      "id": "tool-update-welcome-code",
+      "name": "Tool: update_agent_welcome",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        3020,
+        1420
+      ],
+      "parameters": {
+        "name": "update_agent_welcome",
+        "description": "Replace the welcome message (first_message) of a specific ElevenLabs voice agent. Parameters: agentId — agent id from list. newFirstMessage — literal new welcome text.",
+        "language": "javaScript",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { first_message: args.newFirstMessage } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"newFirstMessage\": { \"type\": \"string\", \"description\": \"The new welcome message text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newFirstMessage\"]\n}"
+      }
+    },
+    {
+      "id": "tool-create-kb-doc-code",
+      "name": "Tool: create_knowledge_doc",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        3180,
+        1420
+      ],
+      "parameters": {
+        "name": "create_knowledge_doc",
+        "description": "Create a new knowledge document in ElevenLabs from plain text. Returns JSON {id, name}. Call this BEFORE attach_knowledge_to_agent.",
+        "language": "javaScript",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/knowledge-base/text',\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { name: args.docName, text: args.docText },\n  json: true,\n});\nreturn JSON.stringify({ id: res.id, name: res.name || args.docName });",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"docName\": { \"type\": \"string\", \"description\": \"Short human-readable name for the document\" },\n    \"docText\": { \"type\": \"string\", \"description\": \"Full text content of the document\" }\n  },\n  \"required\": [\"docName\", \"docText\"]\n}"
+      }
+    },
+    {
+      "id": "tool-attach-kb-code",
+      "name": "Tool: attach_knowledge_to_agent",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        3340,
+        1420
+      ],
+      "parameters": {
+        "name": "attach_knowledge_to_agent",
+        "description": "Attach a previously-created knowledge document to a specific ElevenLabs voice agent. Use after create_knowledge_doc. Parameters: agentId, docId, docName.",
+        "language": "javaScript",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: args.docName, id: args.docId }] } } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"docId\": { \"type\": \"string\", \"description\": \"Document id returned from create_knowledge_doc\" },\n    \"docName\": { \"type\": \"string\", \"description\": \"Display name of the document\" }\n  },\n  \"required\": [\"agentId\", \"docId\", \"docName\"]\n}"
+      }
     }
   ],
   "connections": {
