@@ -2,130 +2,177 @@
 
 [English](README.md) | Русский
 
-Telegram-бот для управления голосовыми агентами ElevenLabs Conversational AI. Каждый пользователь регистрирует свои агенты в боте и редактирует их параметры (системный промпт, приветствие, базу знаний), не заходя в дашборд ElevenLabs.
+Telegram-бот для управления своими голосовыми агентами ElevenLabs. Можно говорить с ним голосом или текстом, обычным языком. Бот сам понимает, у какого агента и что менять, и делает изменение через API ElevenLabs.
+
+Сделан как тестовое задание на позицию Automation Developer в profichat.net.
+
+## Демо
+
+Бот: [t.me/northbridge_ai_bot](https://t.me/northbridge_ai_bot)
+
+`/start`, дальше либо выбрать агента из меню, либо просто написать или сказать голосом, что нужно:
+
+- "update testgolden welcome to Hello world"
+- "у Тор поменяй промпт на дружелюбный ассистент"
+- "добавь в базу знаний sdfsd: компания основана в 2020 году"
 
 ## Стек
 
-- **n8n** (self-hosted, US VPS) — оркестрация. 49 узлов, один webhook-триггер на Telegram
-- **MySQL 8** — пользователи, агенты, FSM-сессии, аудит-лог
-- **ElevenLabs Conversational AI API** — CRUD агентов, создание knowledge base и прикрепление к агенту
-- **Cloudflare Tunnel** — HTTPS-доступ к n8n без открытых портов на VPS
+- n8n — оркестрация, native AI Agent (LangChain) pattern
+- Google Gemini 2.5 Flash — языковая модель для агента и распознавание голоса
+- MySQL 8 — пользователи, агенты, сессии, аудит-лог
+- ElevenLabs Conversational AI API
+- Telegram Bot API
+- Cloudflare Tunnel для webhook'а
 
-## Что бот умеет
+## Архитектура
 
-| Команда | Что делает |
-|---|---|
-| `/start` | Регистрирует пользователя в `users`, создаёт пустую сессию, открывает главное меню |
-| `/menu` | Показывает главное меню (Мои агенты + Добавить агента) |
-| `/add` | Создаёт нового агента. Бот спрашивает имя, зовёт `POST /v1/convai/agents/create`, пишет строку в `user_agents` |
-| `/cancel` | Сбрасывает FSM-состояние, возвращает в idle |
-| `/help` | Печатает справку |
+В ТЗ UX разделён на два пути:
 
-Из меню агента доступно: редактирование системного промпта, приветственного сообщения, замена knowledge base (загрузка текста в `/v1/convai/knowledge-base` + attach к агенту), переключение между агентами, удаление.
+- §2 "When a user sends messages": модифицировать промпт, приветствие, базу знаний.
+- §4 "From the Telegram bot menu": посмотреть агентов, выбрать активного.
 
-Все операции с агентом проходят через **проверку владения**: каждый запрос на изменение делает JOIN `user_agents × users` по `telegram_user_id`, и если строка не вернулась, action логируется как `denied`, пользователь получает отказ. Сырой `elevenlabs_agent_id` никогда не уходит в `callback_data` Telegram-клавиатуры — используется внутренний `user_agents.id`.
+Сделал ровно так. Кнопки отвечают за навигацию. Сообщения (текст и голос) идут в AI Agent и делают модификации.
 
-## Что управляется из бота vs из дашборда ElevenLabs
+```
+Telegram update
+  ├─ callback_query  → меню          (LIST, SELECT, ADD)
+  └─ message         → AI Agent      (5 tools)
+```
 
-Бот закрывает то, что формирует **поведение и знания агента**: системный промпт, приветственное сообщение, knowledge base. Это то, что просили в ТЗ.
+### AI Agent
 
-Всё остальное оставлено на дашборд ElevenLabs: выбор LLM (GPT-4o, Gemini 2.0 Flash, Claude 3.5 Sonnet, custom_llm endpoint), выбор голоса, tools/функции, телефонные номера, конфигурация сессий. Всё это есть в том же ElevenLabs API и при необходимости легко добавляется в бота: например, `agent.prompt.llm` правится тем же `PATCH /v1/convai/agents/{id}`, что уже используется для промпта.
+```
+Telegram Trigger
+  → Parse Update (нормализация, детект голоса)
+  → MSG: Route (отделяем /commands)
+  → TXT: Get Session → TXT: Route FSM (если в FSM — туда; иначе → AI)
+  → AI: Get User Agents (MySQL: агенты этого юзера)
+  → AI: Is Voice?
+       ├ голос → Get File Meta → Download → Encode → Transcribe (Gemini STT)
+       └ текст → проброс
+  → Build Agent Context (system prompt со встроенным списком агентов юзера)
+  → AI Agent (@n8n/n8n-nodes-langchain.agent v3.1)
+       ├─ Google Gemini Chat Model           (ai_languageModel)
+       ├─ Simple Memory  sessionKey=chat_id  (ai_memory)
+       └─ 5 Code Tools                        (ai_tool):
+           get_agent_config
+           update_agent_prompt
+           update_agent_welcome
+           create_knowledge_doc
+           attach_knowledge_to_agent
+  → Send Agent Reply
+```
 
-## Архитектурные решения
+43 узла.
 
-- **FSM в БД, не в памяти n8n.** `user_sessions.current_action` (`idle` / `awaiting_prompt` / `awaiting_welcome` / `awaiting_kb_text` / `awaiting_agent_name`) — единственный источник истины. n8n может пережить рестарт без потери контекста ни у одного пользователя.
-- **`user_agents.id` (INT) в callback_data.** Сырой ElevenLabs ID не уходит в Telegram — это и приватность, и защита от подделки callback.
-- **`action_logs` без FK на users.** Audit trail переживает удаление пользователя — важно для разбора инцидентов.
-- **`/start: Upsert User` использует `INSERT … ON DUPLICATE KEY UPDATE`** по `telegram_user_id`. Идемпотентно: можно жать /start сколько угодно.
+### Почему native AI Agent
 
-## Установка
+Первая версия разбирала намерения руками: HTTP к Gemini, Code-узел парсит JSON, Switch по action. Работало, но это n8n как контейнер для JavaScript, а не n8n. Переписал на native pattern: AI Agent с sub-node connections (`ai_languageModel`, `ai_memory`, `ai_tool`). У каждого tool явная JSON `inputSchema`, поэтому Gemini генерирует корректные function calls.
 
-1. Скопировать `.env.example` → `.env`, заполнить
-2. `mysql < schema.sql`
-3. Импортировать `workflow.json` в n8n (Workflows → Import)
-4. Завести в n8n три credential:
-   - **MySQL** — `elevenlabs_telegram_bot`
-   - **Telegram** — Bot Token из @BotFather
-   - **HTTP Header Auth** для ElevenLabs — header `xi-api-key`, value — ваш ElevenLabs API key (нужны scopes `convai_*`)
-5. Webhook от Telegram прикрепить на узел `TG Trigger` (n8n покажет URL после активации workflow)
-6. Активировать workflow
+## Безопасность (§3)
 
-## Переменные окружения
+Два слоя.
 
-| Variable | Где используется |
-|---|---|
-| `TELEGRAM_BOT_TOKEN` | Прямой вызов Bot API из узла `LIST: Send` (httpRequest) — обход бага n8n Telegram-узла, см. ниже |
-| `ELEVENLABS_API_KEY` | HTTP Header Auth credential `xi-api-key` |
-| `MYSQL_*` | MySQL credential |
+Чтения через меню делают JOIN `user_agents × users ON u.id = ua.user_id WHERE telegram_user_id = ?`. Ноль строк — агента не существует для этого юзера. В `callback_data` inline-клавиатуры уходит внутренний `user_agents.id`, не сырой ElevenLabs id, так что подделать callback с чужим id нельзя.
 
-На n8n-сервере для доступа к `$env.*` в узлах нужен флаг **`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`** (drop-in `/etc/systemd/system/n8n.service.d/env-access.conf`).
+Для AI-пути `Build Agent Context` подтягивает агентов юзера из MySQL до запуска агента и встраивает их в системный промпт. Gemini видит только id юзера. Параметры tools типизированы JSON-схемой, выдумать чужой id модель не может.
+
+Таблица `action_logs` — append-only аудит со статусами `success`, `error`, `denied`.
 
 ## База данных
 
-См. `schema.sql`. Четыре таблицы:
+См. `schema.sql`. Четыре таблицы.
 
-- `users` — UNIQUE по `telegram_user_id`
-- `user_agents` — UNIQUE `(user_id, elevenlabs_agent_id)`, soft delete через `is_active`
-- `user_sessions` — PK по `telegram_user_id`, ENUM FSM
-- `action_logs` — append-only, без FK; индексы по `action_type`, `status`, `created_at`
+| Таблица | Назначение |
+|---|---|
+| `users` | Telegram-юзеры, UNIQUE по `telegram_user_id` |
+| `user_agents` | Связь юзер ↔ ElevenLabs-агент. UNIQUE `(user_id, elevenlabs_agent_id)`. Soft-delete через `is_active` |
+| `user_sessions` | FSM для `/add`-флоу (спрашиваем имя нового агента). Остальное stateless |
+| `action_logs` | Append-only аудит |
 
-Каждая операция с агентом начинается с этого JOIN (`PROMPT: Get Agent (ownership)`, аналоги для welcome/kb):
+Ownership-запрос на каждом чтении меню:
 
 ```sql
-SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name
+SELECT ua.id, ua.agent_name, ua.elevenlabs_agent_id
 FROM user_agents ua
 JOIN users u ON u.id = ua.user_id
 WHERE u.telegram_user_id = ?
-  AND ua.id = ?
-  AND ua.is_active = 1;
+  AND ua.is_active = 1
+ORDER BY ua.created_at DESC;
 ```
 
-Ноль строк — IF-узел `PROMPT: Agent found?` уводит в `MSG: Cancel Update`, сессия сбрасывается, в `action_logs` пишется `denied`.
+## Tools (5 возможностей для Gemini)
 
-## Грабли n8n (что узнал по дороге)
+У каждого `toolCode` явная `inputSchema` и JavaScript, дёргающий ElevenLabs.
 
-### 1. Динамическая `inline_keyboard` молча игнорируется Telegram-узлом
+| Tool | Method | Endpoint | Inputs |
+|---|---|---|---|
+| `get_agent_config` | GET | `/v1/convai/agents/{agentId}` | `agentId` |
+| `update_agent_prompt` | PATCH | `/v1/convai/agents/{agentId}` | `agentId`, `newPrompt` |
+| `update_agent_welcome` | PATCH | `/v1/convai/agents/{agentId}` | `agentId`, `newFirstMessage` |
+| `create_knowledge_doc` | POST | `/v1/convai/knowledge-base/text` | `docName`, `docText` |
+| `attach_knowledge_to_agent` | PATCH | `/v1/convai/agents/{agentId}` | `agentId`, `docId`, `docName` |
 
-`n8n-nodes-base.telegram@1.2` при `replyMarkup="inlineKeyboard"` плюс динамическом `inlineKeyboard.rows = ={{ $json.keyboard.map(...) }}` **выкидывает выражение** и отправляет в Telegram пустой `reply_markup`. Узел читает только fixedCollection-значения, expression на это поле он не вычисляет.
+Для базы знаний агент сначала зовёт `create_knowledge_doc` чтобы получить id документа, потом `attach_knowledge_to_agent`. Зависимость между двумя вызовами Gemini обрабатывает сам.
 
-**Обход:** для динамических клавиатур обходим узел и зовём Bot API напрямую через `httpRequest`:
+## Установка
+
+1. Скопировать `.env.example` в `.env`, заполнить.
+2. `mysql < schema.sql`.
+3. Импортировать `workflow.json` в n8n.
+4. Завести четыре credential:
+   - MySQL → `elevenlabs_telegram_bot`
+   - Telegram → bot token от @BotFather
+   - HTTP Header Auth для ElevenLabs → header `xi-api-key`, value = ключ ElevenLabs со scopes `convai_*`
+   - Google Palm API для Gemini Chat Model, ключ из Google AI Studio
+5. Привязать webhook от Telegram к узлу `TG Trigger` (URL n8n покажет после активации).
+6. Активировать workflow.
+
+## Переменные окружения
+
+На хосте (мы прокинули через systemd drop-in):
+
+| Variable | Где используется |
+|---|---|
+| `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` | разрешает `$env.*` в Code / HTTP-узлах |
+| `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` | разрешает использование langchain-tools |
+| `TELEGRAM_BOT_TOKEN` | `LIST: Send` (прямой Bot API для динамической клавиатуры) |
+| `ELEVENLABS_API_KEY` | 5 Code Tools |
+| `GOOGLE_API_KEY` | `AI: Transcribe` (HTTP-вызов Gemini STT) |
+
+## Грабли n8n, на которые наступил
+
+Что неочевидно, если будешь переиспользовать части этого workflow.
+
+1. `toolHttpRequest` v1.1 в n8n 2.19.5 не работает с langchain Agent: runtime пытается вызвать `.execute()`, у узла только `.supplyData()`. Обход: `toolCode` v1.3 с явным `inputSchema` и `this.helpers.httpRequest` внутри.
+2. `$helpers` недоступен в task-runner sandbox. Внутри Code-узла binary читать через `this.helpers.getBinaryDataBuffer(0, 'data')`. `N8N_RUNNERS_ENABLED=false` в 2.19.5 runner не отключает.
+3. `require('mysql2/promise')` заблокирован даже с `NODE_FUNCTION_ALLOW_EXTERNAL=mysql2`. Sandbox langchain-tool этот флаг не учитывает. Если нужен MySQL внутри tool — выводи через webhook sub-workflow.
+4. `$fromAI()` в `toolHttpRequest` в этой версии не генерирует function declarations корректно для Gemini (пустые ключи в `parameters.properties` → 400 от Gemini). Либо литеральные `{placeholder}` + `placeholderDefinitions`, либо `toolCode` с `inputSchema`.
+5. Switch роутит по case index, а не по `outputKey`. Перепишешь правила — связи нужно удалить и добавить заново с правильным `sourceIndex`. Auto-sanitization это не чинит.
+6. `leftValue` в Switch context-aware. Если input идёт от узла B, а ты хочешь роутить по полю узла A — пиши `$('A').item.json.field`. `$json` смотрит на то, что кормит Switch.
+7. Динамическая `inline_keyboard` в `n8n-nodes-base.telegram@1.2` молча игнорирует expression на `inlineKeyboard.rows`. Для списка агентов этот workflow обходит узел и зовёт Bot API напрямую через `$env.TELEGRAM_BOT_TOKEN`.
+8. IF v2 со строгим `typeValidation` падает на integer-id из MySQL (это JS number). Фикс: `parameters.conditions.options.typeValidation: "loose"` и `parameters.looseTypeValidation: true`.
+9. `parse_mode: Markdown` съедает `_` underscore из id-шников ElevenLabs. Используй `parse_mode: HTML`.
+10. `appendAttribution: false` в `additionalFields` любого Telegram-узла убирает плашку "sent automatically with n8n" без активации лицензии.
+
+## Файлы
+
 ```
-POST https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage
-body: { chat_id, text, reply_markup: { inline_keyboard: [...] } }
+README.md       английская версия
+README.ru.md    этот файл
+STATUS.md       полная архитектура + соответствие ТЗ
+schema.sql      MySQL DDL
+workflow.json   экспорт workflow n8n (43 узла)
+.env.example    шаблон env-переменных
 ```
 
-Так сделан узел `LIST: Send`, который строит клавиатуру для «Мои агенты» после нажатия кнопки меню. Статичные клавиатуры (главное меню, меню агента) остались на нативном Telegram-узле — там expression не нужен.
+## Статус
 
-### 2. IF v2 со strict typeValidation падает на integer из MySQL
+Прод: n8n живой на US VPS. Workflow `ElevenLabs Voice Agent Bot` (id `72ad4b58019c4be3`) активен. Бот на [t.me/northbridge_ai_bot](https://t.me/northbridge_ai_bot) отвечает.
 
-MySQL-узел возвращает `id` как JavaScript number. Если в IF v2 поставить оператор `exists`, тип `"string"` и `conditions.options.typeValidation: "strict"`, узел падает с:
-```
-NodeOperationError: Wrong type: '5' is a number but was expecting a string [condition 0, item 0]
-```
-Per-condition `typeValidation: "loose"` это **не** оверрайдит — n8n читает родительский `conditions.options.typeValidation`.
+Все три возможности §2 проверены end-to-end на проде ElevenLabs:
 
-**Лечение:** ставить `parameters.conditions.options.typeValidation: "loose"` **и** `parameters.looseTypeValidation: true` (оба места, потому что редактор n8n показывает одно, а runtime читает другое). Применено к узлу `PROMPT: Agent found?`.
-
-### 3. MySQL-узел и placeholder'ы
-
-В query-параметрах надо использовать формат `={{ $json.foo }}` (с `=`-префиксом) и `executeQuery` режим. Без префикса n8n не интерполирует expression в SQL.
-
-### 4. Webhook URL и Cloudflare Tunnel
-
-Для активации Telegram webhook нужен публичный HTTPS. n8n генерит URL вида `https://<n8n-host>/webhook/<id>`. Cloudflare Tunnel пробрасывает домен на `127.0.0.1:5678`. После рестарта n8n webhook-ID не меняется — Telegram-подписку переустанавливать не нужно.
-
-## Структура репо
-
-```
-.
-├── README.md            # английская версия (основная)
-├── README.ru.md         # этот файл
-├── schema.sql           # MySQL DDL
-├── workflow.json        # экспорт n8n workflow (49 узлов)
-├── .env.example         # шаблон переменных окружения
-└── .gitignore
-```
-
-## Состояние
-
-Прод: n8n активен на US VPS, workflow `ElevenLabs Voice Agent Bot` (`id: 72ad4b58019c4be3`) — `active=1`. На дату последнего коммита в БД живые агенты, прогнаны end-to-end: `create_agent` ×4, `edit_prompt`, `edit_welcome`, `edit_kb` — все success в `action_logs`.
+- `update_agent_prompt` → системный промпт агента теперь "ты дружелюбный ассистент"
+- `update_agent_welcome` → `first_message` агента теперь "Да, привет, мир."
+- `create_knowledge_doc` + `attach_knowledge_to_agent` → к базе знаний привязан документ "Лось"
