@@ -1,67 +1,75 @@
 # ElevenLabs Telegram Bot
 
-Telegram-бот для управления голосовыми агентами ElevenLabs Conversational AI. Каждый пользователь регистрирует свои агенты и редактирует их параметры (системный промпт, приветствие, базу знаний) без захода в дашборд ElevenLabs.
+English | [Русский](README.ru.md)
 
-## Стек
+Telegram bot for managing your own ElevenLabs Conversational AI voice agents. Each user registers their agents in the bot and edits their parameters (system prompt, welcome message, knowledge base) without ever opening the ElevenLabs dashboard.
 
-- **n8n** (self-hosted, US VPS) — оркестрация. 49 узлов, один webhook-триггер на Telegram
-- **MySQL 8** — пользователи, агенты, FSM-сессии, аудит-лог
-- **ElevenLabs Conversational AI API** — CRUD агентов, прикрепление knowledge base
-- **Cloudflare Tunnel** — HTTPS-доступ к n8n без открытых портов на VPS
+## Stack
 
-## Возможности
+- **n8n** (self-hosted, US VPS) — orchestration. 49 nodes, one webhook trigger on Telegram
+- **MySQL 8** — users, agents, FSM sessions, audit log
+- **ElevenLabs Conversational AI API** — agent CRUD, knowledge base creation and attachment
+- **Cloudflare Tunnel** — HTTPS into n8n without exposing ports on the VPS
 
-| Команда | Что делает |
+## What the bot can do
+
+| Command | What it does |
 |---|---|
-| `/start` | Регистрирует пользователя в `users`, создаёт пустую сессию, открывает главное меню |
-| `/menu` | Показывает главное меню (Мои агенты + Добавить агента) |
-| `/add` | Запускает создание нового агента — бот спрашивает имя, сам зовёт `POST /v1/convai/agents/create`, пишет в `user_agents` |
-| `/cancel` | Сбрасывает FSM-состояние, возвращает в idle |
-| `/help` | Печатает справку |
+| `/start` | Registers the user in `users`, creates an empty session, opens the main menu |
+| `/menu` | Shows the main menu (My agents + Add agent) |
+| `/add` | Creates a new agent. The bot asks for a name, calls `POST /v1/convai/agents/create`, writes the row into `user_agents` |
+| `/cancel` | Resets FSM state, returns to idle |
+| `/help` | Prints help |
 
-Из меню агента доступно: редактирование системного промпта, приветственного сообщения, knowledge base (загрузка текста в `/v1/convai/knowledge-base` + прикрепление к агенту), переключение между агентами, удаление.
+From the agent menu the user can: edit the system prompt, edit the welcome message, replace the knowledge base (upload text to `/v1/convai/knowledge-base`, then attach to the agent), switch between agents, delete.
 
-Все операции с агентом проходят через **проверку владения** — каждый запрос на изменение делает JOIN `user_agents` × `users` по `telegram_user_id`, и если строка не вернулась → action логируется как `denied` и пользователь получает отказ. Сырой `elevenlabs_agent_id` никогда не уходит в `callback_data` Telegram-клавиатуры; используется внутренний `user_agents.id`.
+Every operation that touches an agent goes through an **ownership check** — each modify request runs a JOIN `user_agents × users` on `telegram_user_id`, and if no row comes back, the action is logged as `denied` and the user gets a refusal. The raw `elevenlabs_agent_id` is never sent into Telegram `callback_data`; the internal `user_agents.id` is used instead.
 
-## Архитектурные решения
+## What's managed from the bot vs. from the ElevenLabs dashboard
 
-- **FSM в БД, не в памяти n8n.** `user_sessions.current_action` (`idle` / `awaiting_prompt` / `awaiting_welcome` / `awaiting_kb_text` / `awaiting_agent_name`) — единственный источник истины. n8n может пережить рестарт без потери контекста.
-- **`user_agents.id` (INT) в callback_data.** Никогда не отдаём raw ElevenLabs ID в Telegram. Это и приватность, и защита от подделки.
-- **`action_logs` без FK на users.** Audit trail переживает удаление пользователя — важно для разбора инцидентов.
-- **`/start: Upsert User` использует `INSERT … ON DUPLICATE KEY UPDATE`** по `telegram_user_id` — идемпотентно, можно жать /start сколько угодно.
+The bot covers what shapes the agent's **content and behavior**: system prompt, welcome message, knowledge base. That's what the test task asked for.
 
-## Установка
+Everything else stays in the ElevenLabs dashboard: choice of LLM model (GPT-4o, Gemini 2.0 Flash, Claude 3.5 Sonnet, custom_llm endpoint), voice selection, tools/functions, phone numbers, session configuration. All of it is reachable through the same ElevenLabs API and could be added to the bot if needed — `agent.prompt.llm` is patched via the same `PATCH /v1/convai/agents/{id}` already used here for the prompt.
 
-1. Скопировать `.env.example` → `.env`, заполнить
+## Architecture decisions
+
+- **FSM lives in the DB, not in n8n memory.** `user_sessions.current_action` (`idle` / `awaiting_prompt` / `awaiting_welcome` / `awaiting_kb_text` / `awaiting_agent_name`) is the single source of truth. n8n can restart without losing any user's in-progress input.
+- **`user_agents.id` (INT) goes into callback_data.** Raw ElevenLabs IDs never reach Telegram — that's both a privacy decision and a guard against forged callbacks.
+- **`action_logs` has no FK on users.** The audit trail survives user deletion, which matters for incident review.
+- **`/start: Upsert User` uses `INSERT … ON DUPLICATE KEY UPDATE`** on `telegram_user_id`. Idempotent — `/start` can be hit any number of times.
+
+## Setup
+
+1. Copy `.env.example` to `.env`, fill in the values
 2. `mysql < schema.sql`
-3. Импортировать `workflow.json` в n8n (Workflows → Import)
-4. Завести в n8n три credential:
-   - **MySQL** — `elevenlabs_telegram_bot`
-   - **Telegram** — Bot Token из @BotFather
-   - **HTTP Header Auth** для ElevenLabs — header `xi-api-key`, value = ваш ElevenLabs API key (нужны scopes `convai_*`)
-5. Webhook от Telegram прикрепить на узел `TG Trigger` (n8n покажет URL после активации workflow)
-6. Активировать workflow
+3. Import `workflow.json` into n8n (Workflows → Import)
+4. Configure three n8n credentials:
+   - **MySQL** — connects to `elevenlabs_telegram_bot`
+   - **Telegram** — Bot Token from @BotFather
+   - **HTTP Header Auth** for ElevenLabs — header `xi-api-key`, value is your ElevenLabs API key (needs `convai_*` scopes)
+5. Attach the Telegram webhook to the `TG Trigger` node (n8n shows the URL once the workflow is activated)
+6. Activate the workflow
 
-## Переменные окружения
+## Environment variables
 
-| Variable | Где используется |
+| Variable | Where it's used |
 |---|---|
-| `TELEGRAM_BOT_TOKEN` | Прямой вызов Bot API из узла `LIST: Send` (httpRequest) — обход бага n8n Telegram-узла, см. ниже |
-| `ELEVENLABS_API_KEY` | HTTP Header Auth credential `xi-api-key` |
+| `TELEGRAM_BOT_TOKEN` | Direct Bot API call from the `LIST: Send` node (httpRequest) — workaround for an n8n Telegram node bug, see below |
+| `ELEVENLABS_API_KEY` | Goes into the HTTP Header Auth credential as `xi-api-key` |
 | `MYSQL_*` | MySQL credential |
 
-На n8n-сервере для доступа к `$env.*` нужен флаг **`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`** (drop-in `/etc/systemd/system/n8n.service.d/env-access.conf`).
+On the n8n host, `$env.*` access in nodes requires the **`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`** flag (drop-in `/etc/systemd/system/n8n.service.d/env-access.conf`).
 
-## База данных
+## Database
 
-См. `schema.sql`. Четыре таблицы:
+See `schema.sql`. Four tables:
 
-- `users` — UNIQUE по `telegram_user_id`
-- `user_agents` — UNIQUE `(user_id, elevenlabs_agent_id)`, soft delete через `is_active`
-- `user_sessions` — PK по `telegram_user_id`, ENUM FSM
-- `action_logs` — append-only, без FK; индексы по `action_type`, `status`, `created_at`
+- `users` — UNIQUE on `telegram_user_id`
+- `user_agents` — UNIQUE `(user_id, elevenlabs_agent_id)`, soft-delete via `is_active`
+- `user_sessions` — PK on `telegram_user_id`, ENUM for FSM state
+- `action_logs` — append-only, no FKs, indexed by `action_type`, `status`, `created_at`
 
-Каждая операция с агентом начинается с этого JOIN'а (`PROMPT: Get Agent (ownership)`, аналоги для welcome/kb):
+Every modify operation starts with this JOIN (`PROMPT: Get Agent (ownership)` and its welcome/kb siblings):
 
 ```sql
 SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name
@@ -72,51 +80,52 @@ WHERE u.telegram_user_id = ?
   AND ua.is_active = 1;
 ```
 
-Ноль строк → IF-узел `PROMPT: Agent found?` уводит в `MSG: Cancel Update`, сессия сбрасывается, в логи пишется `denied`.
+Zero rows means the IF node `PROMPT: Agent found?` routes to `MSG: Cancel Update`, the session is reset, and `action_logs` gets a `denied` entry.
 
-## Известные подводные камни n8n (что узнали при разработке)
+## n8n gotchas (what I learned the hard way)
 
-### 1. Динамическая `inline_keyboard` в Telegram-узле молча игнорируется
+### 1. Dynamic `inline_keyboard` is silently ignored by the Telegram node
 
-Узел `n8n-nodes-base.telegram@1.2` при `replyMarkup="inlineKeyboard"` + динамическом `inlineKeyboard.rows = ={{ $json.keyboard.map(...) }}` **выкидывает выражение** и отправляет в Telegram пустой `reply_markup`. Видимо узел смотрит только на fixedCollection-значения, expression на это поле он не вычисляет.
+`n8n-nodes-base.telegram@1.2` with `replyMarkup="inlineKeyboard"` plus a dynamic `inlineKeyboard.rows = ={{ $json.keyboard.map(...) }}` **drops the expression** and sends an empty `reply_markup` to Telegram. The node only reads fixedCollection values for that field; expressions aren't evaluated.
 
-**Лечение:** для динамических клавиатур обходим узел и зовём Bot API напрямую через `httpRequest`:
+**Workaround:** for dynamic keyboards, bypass the node and call Bot API directly via `httpRequest`:
 ```
 POST https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage
 body: { chat_id, text, reply_markup: { inline_keyboard: [...] } }
 ```
 
-В этом workflow так сделан узел `LIST: Send` — список агентов после нажатия «🎙 Мои агенты». Статичные клавиатуры (главное меню, меню агента) остались на нативном Telegram-узле — там expression не нужен.
+The `LIST: Send` node uses this — it builds the keyboard for «My agents» after the user taps the menu button. Static keyboards (main menu, agent menu) stay on the native Telegram node, where no expression is needed.
 
-### 2. IF v2 со `strict` typeValidation падает на integer из MySQL
+### 2. IF v2 with strict typeValidation breaks on MySQL integer columns
 
-MySQL-узел возвращает `id` как JavaScript number. Если в IF v2 поставить оператор `exists` с `type: "string"` и `conditions.options.typeValidation: "strict"`, узел падает с:
+A MySQL node returns `id` as a JavaScript number. If you set up an IF v2 condition with operator `exists`, type `"string"`, and `conditions.options.typeValidation: "strict"`, the node fails with:
 ```
 NodeOperationError: Wrong type: '5' is a number but was expecting a string [condition 0, item 0]
 ```
-Per-condition `typeValidation: "loose"` это **не** оверрайдит — n8n читает родительский `conditions.options.typeValidation`.
+Setting per-condition `typeValidation: "loose"` does **not** override this — n8n reads the parent `conditions.options.typeValidation`.
 
-**Лечение:** ставить `parameters.conditions.options.typeValidation: "loose"` + `parameters.looseTypeValidation: true` (оба места, потому что фронт n8n иногда подсовывает одно, бэкенд — другое). Применено к узлу `PROMPT: Agent found?`.
+**Fix:** set `parameters.conditions.options.typeValidation: "loose"` **and** `parameters.looseTypeValidation: true` (both places, because the n8n editor surfaces one and the runtime checks the other). Applied to the `PROMPT: Agent found?` node.
 
-### 3. MySQL-узел и placeholder'ы
+### 3. MySQL node placeholders
 
-В query-параметрах надо использовать формат `={{ $json.foo }}` (с `=`-префиксом) и подключать `executeQuery` режим. Без префикса n8n не интерполирует expression в SQL.
+Query parameters need `={{ $json.foo }}` (the `=` prefix matters) and `executeQuery` mode. Without the prefix n8n doesn't interpolate expressions into the SQL.
 
-### 4. Webhook URL и Cloudflare Tunnel
+### 4. Webhook URL and Cloudflare Tunnel
 
-Для активации Telegram webhook нужен публичный HTTPS. n8n генерит URL вида `https://<n8n-host>/webhook/<id>`. Cloudflare Tunnel пробрасывает домен → 127.0.0.1:5678. После рестарта n8n webhook-ID не меняется — Telegram-подписку не надо переустанавливать.
+Activating the Telegram webhook needs a public HTTPS endpoint. n8n generates a URL of the form `https://<n8n-host>/webhook/<id>`. Cloudflare Tunnel forwards the domain to `127.0.0.1:5678`. The webhook ID doesn't change across n8n restarts, so the Telegram subscription doesn't need to be re-registered.
 
-## Структура репо
+## Repo layout
 
 ```
 .
-├── README.md            # этот файл
+├── README.md            # this file (English)
+├── README.ru.md         # Russian version
 ├── schema.sql           # MySQL DDL
-├── workflow.json        # экспорт n8n workflow (49 узлов)
-├── .env.example         # шаблон переменных окружения
+├── workflow.json        # exported n8n workflow (49 nodes)
+├── .env.example         # template for environment variables
 └── .gitignore
 ```
 
-## Состояние
+## Status
 
-Прод: n8n активен на US VPS, workflow `ElevenLabs Voice Agent Bot` (`id: 72ad4b58019c4be3`) — `active=1`. На дату последнего коммита в БД 4 живых агента, прошли успешно: `create_agent` ×4, `edit_prompt`, `edit_welcome`, `edit_kb`.
+Prod: n8n is active on a US VPS, workflow `ElevenLabs Voice Agent Bot` (`id: 72ad4b58019c4be3`) is `active=1`. As of the last commit, the DB has live agents created and exercised end-to-end: `create_agent` ×4, `edit_prompt`, `edit_welcome`, `edit_kb` — all success in `action_logs`.
