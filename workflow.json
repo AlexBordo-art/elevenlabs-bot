@@ -511,7 +511,7 @@
             "version": 2,
             "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "strict"
+            "typeValidation": "loose"
           },
           "conditions": [
             {
@@ -522,11 +522,14 @@
                 "operation": "exists",
                 "singleValue": true
               },
-              "id": "condition-1778624545957-3loofwwcv"
+              "id": "condition-1778624545957-3loofwwcv",
+              "typeValidation": "loose"
             }
           ],
           "combinator": "and"
-        }
+        },
+        "looseTypeValidation": true,
+        "options": {}
       },
       "id": "node-prompt-if-found",
       "name": "PROMPT: Agent found?",
