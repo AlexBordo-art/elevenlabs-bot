@@ -40,7 +40,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        460,
+        464,
         400
       ]
     },
@@ -53,7 +53,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -75,7 +76,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -101,7 +103,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        680,
+        688,
         400
       ]
     },
@@ -114,7 +116,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -136,7 +139,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -158,7 +162,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -180,7 +185,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -202,7 +208,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -224,7 +231,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -250,8 +258,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        900,
-        200
+        864,
+        160
       ]
     },
     {
@@ -268,7 +276,7 @@
       "typeVersion": 2.4,
       "position": [
         1120,
-        100
+        112
       ],
       "credentials": {
         "mySql": {
@@ -290,8 +298,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1340,
-        100
+        1344,
+        112
       ],
       "credentials": {
         "mySql": {
@@ -304,7 +312,6 @@
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "=Привет, {{ $('Parse Update').item.json.first_name || 'друг' }}! 👋\n\nЯ помогу управлять твоими голосовыми агентами ElevenLabs.\n\nВыбери действие:",
-        "additionalFields": {},
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -333,6 +340,9 @@
               }
             }
           ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
         }
       },
       "id": "node-send-main-menu",
@@ -340,16 +350,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1560,
-        100
+        1632,
+        112
       ],
+      "webhookId": "f781804c-7ab6-4faf-88db-01b7ceb8a64d",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "f781804c-7ab6-4faf-88db-01b7ceb8a64d"
+      }
     },
     {
       "parameters": {
@@ -365,7 +375,7 @@
       "typeVersion": 2.4,
       "position": [
         1120,
-        360
+        368
       ],
       "credentials": {
         "mySql": {
@@ -383,73 +393,8 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.current_action }}",
-                    "rightValue": "awaiting_prompt",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "prompt"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.current_action }}",
-                    "rightValue": "awaiting_welcome",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "welcome"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.current_action }}",
-                    "rightValue": "awaiting_kb_text",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "kb"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
+                  "typeValidation": "loose",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -477,394 +422,9 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        1340,
-        360
+        1344,
+        368
       ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-prompt-get-agent",
-      "name": "PROMPT: Get Agent (ownership)",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1560,
-        200
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "version": 2,
-            "leftValue": "",
-            "caseSensitive": true,
-            "typeValidation": "loose"
-          },
-          "conditions": [
-            {
-              "leftValue": "={{ $json.id }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "exists",
-                "singleValue": true
-              },
-              "id": "condition-1778624545957-3loofwwcv",
-              "typeValidation": "loose"
-            }
-          ],
-          "combinator": "and"
-        },
-        "looseTypeValidation": true,
-        "options": {}
-      },
-      "id": "node-prompt-if-found",
-      "name": "PROMPT: Agent found?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1780,
-        200
-      ]
-    },
-    {
-      "parameters": {
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { prompt: $('Parse Update').item.json.text } } } }) }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json",
-              "fullResponse": false
-            }
-          }
-        }
-      },
-      "id": "node-prompt-patch",
-      "name": "PROMPT: PATCH ElevenLabs",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2000,
-        160
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_prompt', 'success');",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('PROMPT: Get Agent (ownership)').item.json.id] }}"
-        }
-      },
-      "id": "node-prompt-reset",
-      "name": "PROMPT: Reset + Log",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        2220,
-        160
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=✅ Промпт агента обновлён.\n\nИспользуй /menu для возврата.",
-        "additionalFields": {}
-      },
-      "id": "node-prompt-confirm",
-      "name": "PROMPT: Confirm",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2440,
-        160
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "ccf9303c-2781-4df1-a62b-904571d36ac5"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-welcome-get-agent",
-      "name": "WELCOME: Get Agent",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1560,
-        360
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $json.elevenlabs_agent_id }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { first_message: $('Parse Update').item.json.text } } }) }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "node-welcome-patch",
-      "name": "WELCOME: PATCH",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1780,
-        360
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_welcome', 'success');",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('WELCOME: Get Agent').item.json.id] }}"
-        }
-      },
-      "id": "node-welcome-reset",
-      "name": "WELCOME: Reset + Log",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        2000,
-        360
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=✅ Приветственное сообщение обновлено.\n\nИспользуй /menu для возврата."
-      },
-      "id": "node-welcome-confirm",
-      "name": "WELCOME: Confirm",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2220,
-        360
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "363072b4-953c-47af-8a45-a680d7ee7aa6"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT ua.id, ua.elevenlabs_agent_id, ua.agent_name\nFROM user_agents ua\nJOIN users u ON u.id = ua.user_id\nJOIN user_sessions s ON s.telegram_user_id = u.telegram_user_id\nWHERE u.telegram_user_id = $1\n  AND ua.id = s.selected_agent_db_id\n  AND ua.is_active = 1",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-kb-get-agent",
-      "name": "KB: Get Agent",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1560,
-        520
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.elevenlabs.io/v1/convai/knowledge-base/text",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ name: 'tg_user_' + $('Parse Update').item.json.telegram_user_id + '_' + Date.now(), text: $('Parse Update').item.json.text }) }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "node-kb-create-doc",
-      "name": "KB: Create Doc",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1780,
-        520
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "PATCH",
-        "url": "=https://api.elevenlabs.io/v1/convai/agents/{{ $('KB: Get Agent').item.json.elevenlabs_agent_id }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: $json.name, id: $json.id }] } } } }) }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "node-kb-attach",
-      "name": "KB: Attach to Agent",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2000,
-        520
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "c99ef9957b674492",
-          "name": "ElevenLabs API"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = 'idle' WHERE telegram_user_id = $1;\nINSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status)\nVALUES ($2, $3, 'edit_kb', 'success');",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('Parse Update').item.json.telegram_user_id, $('KB: Get Agent').item.json.id] }}"
-        }
-      },
-      "id": "node-kb-reset",
-      "name": "KB: Reset + Log",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        2220,
-        520
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=✅ База знаний агента обновлена.\n\nИспользуй /menu для возврата."
-      },
-      "id": "node-kb-confirm",
-      "name": "KB: Confirm",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2440,
-        520
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "0ec6cf47-260a-49cb-a4a4-ab977a5e16d8"
     },
     {
       "parameters": {
@@ -888,8 +448,7 @@
           "response": {
             "response": {
               "neverError": true,
-              "responseFormat": "json",
-              "fullResponse": false
+              "responseFormat": "json"
             }
           }
         }
@@ -899,8 +458,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1560,
-        680
+        1568,
+        688
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -922,8 +481,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1780,
-        680
+        1792,
+        688
       ],
       "credentials": {
         "mySql": {
@@ -935,7 +494,11 @@
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=✅ Агент создан в ElevenLabs!\n\nИмя: {{ $('Parse Update').item.json.text }}\nID: `{{ $('ADDAGENT: Create at ElevenLabs').item.json.agent_id }}`\n\nИспользуй /menu чтобы выбрать его и отредактировать промпт, welcome или базу знаний."
+        "text": "=✅ Агент создан в ElevenLabs!\n\nИмя: {{ $('Parse Update').item.json.text }}\nID: <code>{{ $('ADDAGENT: Create at ElevenLabs').item.json.agent_id }}</code>\n\nИспользуй /menu чтобы выбрать его или просто напиши: «у {{ $('Parse Update').item.json.text }} поменяй приветствие на ...»",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
       },
       "id": "node-addagent-confirm",
       "name": "ADDAGENT: Confirm",
@@ -943,22 +506,20 @@
       "typeVersion": 1.2,
       "position": [
         2000,
-        680
+        688
       ],
+      "webhookId": "7fea124b-384c-4fe1-a3e0-7e9535ca7eea",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "7fea124b-384c-4fe1-a3e0-7e9535ca7eea"
+      }
     },
     {
       "parameters": {
         "resource": "callback",
-        "operation": "answerQuery",
         "queryId": "={{ $json.callback_id }}",
-        "results": "",
         "additionalFields": {}
       },
       "id": "node-cb-answer",
@@ -966,16 +527,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        900,
-        600
+        912,
+        608
       ],
+      "webhookId": "46c64d02-487e-495c-9707-0ce92f56b957",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "46c64d02-487e-495c-9707-0ce92f56b957"
+      }
     },
     {
       "parameters": {
@@ -1035,72 +596,6 @@
                 "conditions": [
                   {
                     "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
-                    "rightValue": "edit_prompt",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "edit_prompt"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
-                    "rightValue": "edit_welcome",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "edit_welcome"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
-                    "rightValue": "edit_kb",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "edit_kb"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('Parse Update').item.json.cb_action }}",
                     "rightValue": "add_agent",
                     "operator": {
                       "type": "string",
@@ -1137,7 +632,9 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "fallbackOutput": "extra"
+        }
       },
       "id": "node-cb-route",
       "name": "CB: Route Action",
@@ -1145,7 +642,7 @@
       "typeVersion": 3.2,
       "position": [
         1120,
-        600
+        608
       ]
     },
     {
@@ -1161,7 +658,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1340,
+        1344,
         480
       ],
       "credentials": {
@@ -1180,7 +677,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1560,
+        1568,
         480
       ]
     },
@@ -1197,7 +694,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1340,
+        1344,
         640
       ],
       "credentials": {
@@ -1220,7 +717,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1560,
+        1568,
         640
       ],
       "credentials": {
@@ -1233,8 +730,7 @@
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=🎙 Агент: *{{ $json.agent_name || $json.elevenlabs_agent_id }}*\n\nЧто хочешь изменить?",
-        "additionalFields": {},
+        "text": "=🎙 Активный агент: <b>{{ $json.agent_name }}</b>\n\nНапиши или скажи голосом, что хочешь сделать. Например:\n• «Покажи текущие настройки»\n• «Izmeни промпт на ...»\n• «Поменяй приветствие на ...»\n• «Добавь в базу знаний: ...»",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -1242,43 +738,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "✏ Изменить промпт",
-                    "additionalFields": {
-                      "callback_data": "edit_prompt"
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              "row": {
-                "buttons": [
-                  {
-                    "text": "👋 Изменить приветствие",
-                    "additionalFields": {
-                      "callback_data": "edit_welcome"
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              "row": {
-                "buttons": [
-                  {
-                    "text": "📚 Обновить базу знаний",
-                    "additionalFields": {
-                      "callback_data": "edit_kb"
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              "row": {
-                "buttons": [
-                  {
-                    "text": "⬅ К списку",
+                    "text": "⬅ К списку агентов",
                     "additionalFields": {
                       "callback_data": "list_agents"
                     }
@@ -1287,6 +747,10 @@
               }
             }
           ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
         }
       },
       "id": "node-select-send",
@@ -1294,148 +758,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1780,
+        1792,
         640
       ],
+      "webhookId": "a79b4b7a-9a8a-41fa-8d5d-5d7e15af70f0",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "a79b4b7a-9a8a-41fa-8d5d-5d7e15af70f0"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
-        "options": {
-          "queryReplacement": "={{ ['awaiting_prompt', $('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-edit-prompt-state",
-      "name": "EDIT_PROMPT: Set State",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1340,
-        760
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
         }
       }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "✏ Пришли новый текст промпта одним сообщением."
-      },
-      "id": "node-edit-prompt-ask",
-      "name": "EDIT_PROMPT: Ask",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1560,
-        760
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "6e4fc7d9-d5ec-4c24-849e-e29087869fe6"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
-        "options": {
-          "queryReplacement": "={{ ['awaiting_welcome', $('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-edit-welcome-state",
-      "name": "EDIT_WELCOME: Set State",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1340,
-        860
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "👋 Пришли новое приветственное сообщение одним сообщением."
-      },
-      "id": "node-edit-welcome-ask",
-      "name": "EDIT_WELCOME: Ask",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1560,
-        860
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "68e46558-d5a7-4c38-8a15-ad88d467dbef"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action = $1 WHERE telegram_user_id = $2 AND selected_agent_db_id IS NOT NULL",
-        "options": {
-          "queryReplacement": "={{ ['awaiting_kb_text', $('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "id": "node-edit-kb-state",
-      "name": "EDIT_KB: Set State",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1340,
-        960
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "📚 Пришли текст для базы знаний одним сообщением."
-      },
-      "id": "node-edit-kb-ask",
-      "name": "EDIT_KB: Ask",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1560,
-        960
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "63d633b6-0a60-4fab-be4e-110cbac1f318"
     },
     {
       "parameters": {
@@ -1450,8 +782,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1340,
-        1060
+        1344,
+        1072
       ],
       "credentials": {
         "mySql": {
@@ -1463,40 +795,35 @@
     {
       "parameters": {
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "➕ Как назвать нового агента?\n\nПришли имя — я создам агента в ElevenLabs автоматически."
+        "text": "➕ Как назвать нового агента?\n\nПришли имя — я создам агента в ElevenLabs автоматически.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
       "id": "node-add-ask",
       "name": "ADD: Ask",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1560,
-        1060
+        1568,
+        1072
       ],
+      "webhookId": "c9518687-7f2f-4a39-bff2-07f653c23b3d",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "c9518687-7f2f-4a39-bff2-07f653c23b3d"
+      }
     },
     {
-      "id": "node-addagent-created-ok",
-      "name": "ADDAGENT: Created OK?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1720,
-        680
-      ],
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "conditions": [
             {
@@ -1511,18 +838,19 @@
             }
           ],
           "combinator": "and"
-        }
-      }
+        },
+        "options": {}
+      },
+      "id": "node-addagent-created-ok",
+      "name": "ADDAGENT: Created OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1728,
+        688
+      ]
     },
     {
-      "id": "node-addagent-log-success",
-      "name": "ADDAGENT: Log Success",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1960,
-        600
-      ],
       "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, details)\nSELECT $1, ua.id, 'create_agent', 'success',\n  JSON_OBJECT('agent_id', $2, 'name', $3)\nFROM user_agents ua\nWHERE ua.elevenlabs_agent_id = $2\nORDER BY ua.id DESC LIMIT 1;",
@@ -1530,6 +858,14 @@
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, $('ADDAGENT: Create at ElevenLabs').item.json.agent_id, $('Parse Update').item.json.text] }}"
         }
       },
+      "id": "node-addagent-log-success",
+      "name": "ADDAGENT: Log Success",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1968,
+        608
+      ],
       "credentials": {
         "mySql": {
           "id": "ec18891bfb714581",
@@ -1538,14 +874,6 @@
       }
     },
     {
-      "id": "node-addagent-log-error",
-      "name": "ADDAGENT: Log Error",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1960,
-        780
-      ],
       "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO action_logs (telegram_user_id, user_agent_id, action_type, status, error_message)\nVALUES ($1, NULL, 'create_agent', 'error', $2);\n\nUPDATE user_sessions SET current_action='idle' WHERE telegram_user_id=$3;",
@@ -1553,6 +881,14 @@
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id, JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json).slice(0, 500), $('Parse Update').item.json.telegram_user_id] }}"
         }
       },
+      "id": "node-addagent-log-error",
+      "name": "ADDAGENT: Log Error",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1968,
+        784
+      ],
       "credentials": {
         "mySql": {
           "id": "ec18891bfb714581",
@@ -1561,103 +897,55 @@
       }
     },
     {
+      "parameters": {
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "=❌ Не получилось создать агента в ElevenLabs.\n\n{{ ($('ADDAGENT: Create at ElevenLabs').item.json && $('ADDAGENT: Create at ElevenLabs').item.json.detail) ? ('Причина: ' + JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json.detail).slice(0,300)) : 'Попробуй другое имя или повтори позже.' }}\n\nЧтобы повторить — нажми «➕ Добавить агента» в /menu.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
       "id": "node-addagent-error-reply",
       "name": "ADDAGENT: Error Reply",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2180,
-        780
+        2192,
+        784
       ],
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=❌ Не получилось создать агента в ElevenLabs.\n\n{{ ($('ADDAGENT: Create at ElevenLabs').item.json && $('ADDAGENT: Create at ElevenLabs').item.json.detail) ? ('Причина: ' + JSON.stringify($('ADDAGENT: Create at ElevenLabs').item.json.detail).slice(0,300)) : 'Попробуй другое имя или повтори позже.' }}\n\nЧтобы повторить — нажми «➕ Добавить агента» в /menu."
-      },
+      "webhookId": "209deda8-2694-494d-bf1d-89d89e0293a5",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "209deda8-2694-494d-bf1d-89d89e0293a5"
+      }
     },
     {
+      "parameters": {
+        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
+        "text": "=🤖 Я помогаю управлять голосовыми агентами ElevenLabs через Telegram.\n\n<b>Команды</b>\n/start — главное меню\n/menu — список твоих агентов\n/add — создать нового агента\n/help — эта справка\n\n<b>Как начать</b>\n1. /add → пришли имя → я создам агента в ElevenLabs\n2. Пиши или говори голосом, что хочешь с агентом сделать. Например:\n  • «покажи моих агентов»\n  • «у testgolden поменяй приветствие на Привет мир»\n  • «измени промпт у sdfsd на дружелюбный помощник»\n  • «добавь в базу знаний testgolden: Компания основана в 2020 году»\n\n<b>Что можно редактировать</b>\n• Системный промпт — поведение и тон\n• Welcome-сообщение — первая фраза агента\n• База знаний — текст-документ",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
       "id": "node-msg-help",
       "name": "MSG: Help",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
         880,
-        540
+        544
       ],
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "=🤖 Я помогаю управлять голосовыми агентами ElevenLabs через Telegram.\n\n📋 *Команды*\n/start — главное меню\n/menu — список твоих агентов\n/add — создать нового агента\n/cancel — отменить ввод\n/help — эта справка\n\n🚀 *Как начать*\n1\\. /add → пришли имя → я создам агента в ElevenLabs\n2\\. /menu → выбери агента → отредактируй промпт, приветствие или базу знаний\n\n🎙 *Что можно редактировать у агента*\n• *Системный промпт* — поведение и тон\n• *Welcome\\-сообщение* — что агент говорит первым\n• *База знаний* — текст\\-документ, к которому агент обращается\n\n💡 *ID* агента \\(`agent_xxx...`\\) — техническое имя из ElevenLabs\\.\n*Имя* — то, что ты видишь в /menu\\.",
-        "additionalFields": {
-          "parse_mode": "MarkdownV2"
-        }
-      },
+      "webhookId": "a41c11b9-60bf-451d-9026-f92439c8c05c",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "a41c11b9-60bf-451d-9026-f92439c8c05c"
-    },
-    {
-      "id": "node-msg-cancel-update",
-      "name": "MSG: Cancel Update",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        880,
-        740
-      ],
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE user_sessions SET current_action='idle', selected_agent_id=NULL WHERE telegram_user_id=$1;",
-        "options": {
-          "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
-        }
-      },
-      "credentials": {
-        "mySql": {
-          "id": "ec18891bfb714581",
-          "name": "MySQL elevenlabs_bot"
         }
       }
     },
     {
-      "id": "node-msg-cancel-reply",
-      "name": "MSG: Cancel Reply",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1100,
-        740
-      ],
-      "parameters": {
-        "chatId": "={{ $('Parse Update').item.json.chat_id }}",
-        "text": "✅ Действие отменено. Открой /menu или /start."
-      },
-      "credentials": {
-        "telegramApi": {
-          "id": "3c8e9d830c184033",
-          "name": "Telegram Bot"
-        }
-      },
-      "webhookId": "9196d4a9-5f16-4b2b-a771-e283b5084e87"
-    },
-    {
-      "id": "75600e82-50a8-40b8-a029-07ae4af6d218",
-      "name": "LIST: Send",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1780,
-        480
-      ],
       "parameters": {
         "method": "POST",
         "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
@@ -1674,17 +962,17 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ chat_id: $json.chat_id, text: $json.text, reply_markup: $json.reply_markup }) }}",
         "options": {}
-      }
+      },
+      "id": "75600e82-50a8-40b8-a029-07ae4af6d218",
+      "name": "LIST: Send",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1792,
+        480
+      ]
     },
     {
-      "id": "node-ai-get-agents",
-      "name": "AI: Get User Agents",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1340,
-        1180
-      ],
       "parameters": {
         "operation": "executeQuery",
         "query": "SELECT COALESCE(JSON_ARRAYAGG(JSON_OBJECT('id', ua.id, 'name', ua.agent_name, 'elevenlabs_agent_id', ua.elevenlabs_agent_id)), JSON_ARRAY()) AS agents_json FROM user_agents ua JOIN users u ON u.id = ua.user_id WHERE u.telegram_user_id = $1 AND ua.is_active = 1",
@@ -1692,6 +980,14 @@
           "queryReplacement": "={{ [$('Parse Update').item.json.telegram_user_id] }}"
         }
       },
+      "id": "node-ai-get-agents",
+      "name": "AI: Get User Agents",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1344,
+        1184
+      ],
       "credentials": {
         "mySql": {
           "id": "ec18891bfb714581",
@@ -1700,21 +996,13 @@
       }
     },
     {
-      "id": "node-ai-is-voice",
-      "name": "AI: Is Voice?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1450,
-        1180
-      ],
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "conditions": [
             {
@@ -1732,23 +1020,20 @@
         },
         "looseTypeValidation": true,
         "options": {}
-      }
+      },
+      "id": "node-ai-is-voice",
+      "name": "AI: Is Voice?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1456,
+        1184
+      ]
     },
     {
-      "id": "node-ai-get-file-meta",
-      "name": "AI: Get File Meta",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1620,
-        1100
-      ],
       "parameters": {
         "method": "POST",
         "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/getFile",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ file_id: $('Parse Update').item.json.voice_file_id }) }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -1758,53 +1043,54 @@
             }
           ]
         },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ file_id: $('Parse Update').item.json.voice_file_id }) }}",
         "options": {}
-      }
+      },
+      "id": "node-ai-get-file-meta",
+      "name": "AI: Get File Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1632,
+        1104
+      ]
     },
     {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot{{ $env.TELEGRAM_BOT_TOKEN }}/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
       "id": "node-ai-download-voice",
       "name": "AI: Download Voice",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1790,
-        1100
-      ],
-      "parameters": {
-        "method": "GET",
-        "url": "=https://api.telegram.org/file/bot{{ $env.TELEGRAM_BOT_TOKEN }}/{{ $json.result.file_path }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file",
-              "outputPropertyName": "data"
-            }
-          }
-        }
-      }
+        1792,
+        1104
+      ]
     },
     {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst bin = item.binary && item.binary.data;\nlet b64 = '';\nlet mime = 'audio/ogg';\nif (bin) {\n  const buf = await this.helpers.getBinaryDataBuffer(0, 'data');\n  b64 = buf.toString('base64');\n  mime = bin.mimeType || mime;\n}\nif (mime === 'application/octet-stream') mime = 'audio/ogg';\nconst pu = $('Parse Update').first().json;\nreturn [{ json: { audio_b64: b64, audio_mime: mime, telegram_user_id: pu.telegram_user_id, chat_id: pu.chat_id } }];"
+      },
       "id": "node-ai-encode-audio",
       "name": "AI: Encode Audio",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1960,
-        1080
-      ],
-      "parameters": {
-        "jsCode": "const item = $input.first();\nconst bin = item.binary && item.binary.data;\nlet b64 = '';\nlet mime = 'audio/ogg';\nif (bin) {\n  const buf = await this.helpers.getBinaryDataBuffer(0, 'data');\n  b64 = buf.toString('base64');\n  mime = bin.mimeType || mime;\n}\nif (mime === 'application/octet-stream') mime = 'audio/ogg';\nconst pu = $('Parse Update').first().json;\nreturn [{ json: { audio_b64: b64, audio_mime: mime, telegram_user_id: pu.telegram_user_id, chat_id: pu.chat_id } }];"
-      }
+        1968,
+        1088
+      ]
     },
     {
-      "id": "node-ai-transcribe",
-      "name": "AI: Transcribe",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2140,
-        1080
-      ],
       "parameters": {
         "method": "POST",
         "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
@@ -1825,30 +1111,30 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ system_instruction: { parts: [{ text: 'Transcribe the user audio. Return ONLY the transcript text, no quotes, no markdown, no commentary.' }] }, contents: [{ parts: [{ inline_data: { mime_type: $json.audio_mime, data: $json.audio_b64 } }] }], generationConfig: { temperature: 0 } }) }}",
         "options": {}
-      }
+      },
+      "id": "node-ai-transcribe",
+      "name": "AI: Transcribe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2144,
+        1088
+      ]
     },
     {
+      "parameters": {
+        "jsCode": "const pu = $('Parse Update').first().json;\nconst row = $('AI: Get User Agents').first().json;\nlet agents = [];\ntry { agents = (typeof row.agents_json === 'string') ? JSON.parse(row.agents_json) : (row.agents_json || []); } catch(e) {}\n\nlet userText = (pu.text || '').trim();\n\nif (pu.is_voice) {\n  try {\n    const up = $input.first().json;\n    const t = up && up.candidates && up.candidates[0] && up.candidates[0].content && up.candidates[0].content.parts && up.candidates[0].content.parts[0] && up.candidates[0].content.parts[0].text;\n    if (t) userText = String(t).trim();\n  } catch (e) {}\n}\n\nconst agentsList = agents.length\n  ? agents.map(a => `- ${a.name} (elevenlabs_id=${a.elevenlabs_agent_id})`).join('\\n')\n  : '(none yet — user can use /add to create one)';\n\nconst systemMessage = `You are an AI assistant inside a Telegram bot. You help the user manage their ElevenLabs Conversational AI voice agents.\n\nEach agent has three editable fields:\n- prompt: system prompt defining behavior, role, personality\n- welcome (first_message): the first message the agent says when a conversation starts\n- knowledge_base: text documents the agent can reference during conversations\n\nThe user owns these agents:\n${agentsList}\n\nYou have these tools:\n- get_agent_config(agentId): get current prompt, welcome message, knowledge base of an agent\n- update_agent_prompt(agentId, newPrompt): replace the agent's system prompt\n- update_agent_welcome(agentId, newFirstMessage): replace the agent's welcome message\n- create_knowledge_doc(docName, docText): create a knowledge document, returns its document id\n- attach_knowledge_to_agent(agentId, docId, docName): attach a knowledge doc to an agent\n\nRules:\n- agentId must be a value from the agent list above (the elevenlabs_id, starts with \"agent_\"). Never invent IDs.\n- To replace the knowledge base: call create_knowledge_doc first to get a docId, then call attach_knowledge_to_agent.\n- If the user does not name an agent and owns several, ask which one. If only one, use it.\n- Respond in the user's language. Be concise. After a successful update, confirm in one short sentence.`;\n\nreturn [{ json: { user_text: userText, system_message: systemMessage, chat_id: pu.chat_id, telegram_user_id: pu.telegram_user_id } }];"
+      },
       "id": "node-build-agent-context",
       "name": "Build Agent Context",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         2320,
-        1180
-      ],
-      "parameters": {
-        "jsCode": "const pu = $('Parse Update').first().json;\nconst row = $('AI: Get User Agents').first().json;\nlet agents = [];\ntry { agents = (typeof row.agents_json === 'string') ? JSON.parse(row.agents_json) : (row.agents_json || []); } catch(e) {}\n\nlet userText = (pu.text || '').trim();\n\nif (pu.is_voice) {\n  try {\n    const up = $input.first().json;\n    const t = up && up.candidates && up.candidates[0] && up.candidates[0].content && up.candidates[0].content.parts && up.candidates[0].content.parts[0] && up.candidates[0].content.parts[0].text;\n    if (t) userText = String(t).trim();\n  } catch (e) {}\n}\n\nconst agentsList = agents.length\n  ? agents.map(a => `- ${a.name} (elevenlabs_id=${a.elevenlabs_agent_id})`).join('\\n')\n  : '(none yet — user can use /add to create one)';\n\nconst systemMessage = `You are an AI assistant inside a Telegram bot. You help the user manage their ElevenLabs Conversational AI voice agents.\n\nEach agent has three editable fields:\n- prompt: system prompt defining behavior, role, personality\n- welcome (first_message): the first message the agent says when a conversation starts\n- knowledge_base: text documents the agent can reference during conversations\n\nThe user owns these agents:\n${agentsList}\n\nYou have these tools:\n- get_agent_config(agentId): get current prompt, welcome message, knowledge base of an agent\n- update_agent_prompt(agentId, newPrompt): replace the agent's system prompt\n- update_agent_welcome(agentId, newFirstMessage): replace the agent's welcome message\n- create_knowledge_doc(docName, docText): create a knowledge document, returns its document id\n- attach_knowledge_to_agent(agentId, docId, docName): attach a knowledge doc to an agent\n\nRules:\n- agentId must be a value from the agent list above (the elevenlabs_id, starts with \"agent_\"). Never invent IDs.\n- To replace the knowledge base: call create_knowledge_doc first to get a docId, then call attach_knowledge_to_agent.\n- If the user does not name an agent and owns several, ask which one. If only one, use it.\n- Respond in the user's language. Be concise. After a successful update, confirm in one short sentence.`;\n\nreturn [{ json: { user_text: userText, system_message: systemMessage, chat_id: pu.chat_id, telegram_user_id: pu.telegram_user_id } }];"
-      }
+        1184
+      ]
     },
     {
-      "id": "node-ai-agent",
-      "name": "AI Agent",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        2540,
-        1180
-      ],
       "parameters": {
         "promptType": "define",
         "text": "={{ $json.user_text }}",
@@ -1856,23 +1142,31 @@
           "systemMessage": "={{ $json.system_message }}",
           "maxIterations": 8
         }
-      }
+      },
+      "id": "node-ai-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2544,
+        1184
+      ]
     },
     {
-      "id": "node-gemini-chat-model",
-      "name": "Google Gemini Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        2380,
-        1420
-      ],
       "parameters": {
         "modelName": "models/gemini-2.5-flash",
         "options": {
           "temperature": 0.2
         }
       },
+      "id": "node-gemini-chat-model",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2384,
+        1424
+      ],
       "credentials": {
         "googlePalmApi": {
           "id": "v7J9zcGtKqsLT1No",
@@ -1881,32 +1175,22 @@
       }
     },
     {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Parse Update').item.json.chat_id }}",
+        "contextWindowLength": 10
+      },
       "id": "node-simple-memory",
       "name": "Simple Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        2540,
-        1420
-      ],
-      "parameters": {
-        "sessionIdType": "customKey",
-        "sessionKey": "={{ $('Parse Update').item.json.chat_id }}",
-        "contextWindowLength": 10
-      }
+        2544,
+        1424
+      ]
     },
     {
-      "id": "node-send-agent-reply",
-      "name": "Send Agent Reply",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2760,
-        1180
-      ],
       "parameters": {
-        "resource": "message",
-        "operation": "sendMessage",
         "chatId": "={{ $('Parse Update').item.json.chat_id }}",
         "text": "={{ $json.output }}",
         "additionalFields": {
@@ -1914,108 +1198,106 @@
           "parse_mode": "HTML"
         }
       },
+      "id": "node-send-agent-reply",
+      "name": "Send Agent Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2768,
+        1184
+      ],
+      "webhookId": "537a85d2-4ec7-4d64-b298-638b57533d64",
       "credentials": {
         "telegramApi": {
           "id": "3c8e9d830c184033",
           "name": "Telegram Bot"
         }
-      },
-      "webhookId": "537a85d2-4ec7-4d64-b298-638b57533d64"
+      }
     },
     {
+      "parameters": {
+        "description": "Fetch current configuration of a specific ElevenLabs voice agent. Returns its current system prompt, first_message (welcome) and attached knowledge base. Parameter agentId is the ElevenLabs id (starts with agent_), pick it from the agent list in the system prompt.",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst agentId = args.agentId;\nconst res = await this.helpers.httpRequest({\n  method: 'GET',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY },\n  json: true,\n});\nconst cfg = (res.conversation_config && res.conversation_config.agent) || {};\nconst out = {\n  prompt: (cfg.prompt && cfg.prompt.prompt) || '',\n  first_message: cfg.first_message || '',\n  knowledge_base: (cfg.prompt && cfg.prompt.knowledge_base) || [],\n};\nreturn JSON.stringify(out);",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id (starts with agent_) — pick one from the agent list in the system prompt\" }\n  },\n  \"required\": [\"agentId\"]\n}"
+      },
       "id": "tool-get-config-code",
       "name": "Tool: get_agent_config",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        2700,
-        1420
-      ],
-      "parameters": {
-        "name": "get_agent_config",
-        "description": "Fetch current configuration of a specific ElevenLabs voice agent. Returns its current system prompt, first_message (welcome) and attached knowledge base. Parameter agentId is the ElevenLabs id (starts with agent_), pick it from the agent list in the system prompt.",
-        "language": "javaScript",
-        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst agentId = args.agentId;\nconst res = await this.helpers.httpRequest({\n  method: 'GET',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY },\n  json: true,\n});\nconst cfg = (res.conversation_config && res.conversation_config.agent) || {};\nconst out = {\n  prompt: (cfg.prompt && cfg.prompt.prompt) || '',\n  first_message: cfg.first_message || '',\n  knowledge_base: (cfg.prompt && cfg.prompt.knowledge_base) || [],\n};\nreturn JSON.stringify(out);",
-        "specifyInputSchema": true,
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id (starts with agent_) — pick one from the agent list in the system prompt\" }\n  },\n  \"required\": [\"agentId\"]\n}"
-      }
+        2704,
+        1424
+      ]
     },
     {
+      "parameters": {
+        "description": "Replace the system prompt (behavior/personality/role) of a specific ElevenLabs voice agent. Parameters: agentId — agent's ElevenLabs id from the list. newPrompt — the literal new system prompt text.",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { prompt: args.newPrompt } } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"newPrompt\": { \"type\": \"string\", \"description\": \"The new system prompt text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newPrompt\"]\n}"
+      },
       "id": "tool-update-prompt-code",
       "name": "Tool: update_agent_prompt",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        2860,
-        1420
-      ],
-      "parameters": {
-        "name": "update_agent_prompt",
-        "description": "Replace the system prompt (behavior/personality/role) of a specific ElevenLabs voice agent. Parameters: agentId — agent's ElevenLabs id from the list. newPrompt — the literal new system prompt text.",
-        "language": "javaScript",
-        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { prompt: args.newPrompt } } } },\n  json: true,\n});\nreturn 'ok';",
-        "specifyInputSchema": true,
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"newPrompt\": { \"type\": \"string\", \"description\": \"The new system prompt text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newPrompt\"]\n}"
-      }
+        2864,
+        1424
+      ]
     },
     {
+      "parameters": {
+        "description": "Replace the welcome message (first_message) of a specific ElevenLabs voice agent. Parameters: agentId from the agent list, newFirstMessage as literal new welcome text.",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { first_message: args.newFirstMessage } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id (starts with agent_) from the agent list in the system prompt\" },\n    \"newFirstMessage\": { \"type\": \"string\", \"description\": \"The new welcome message text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newFirstMessage\"]\n}"
+      },
       "id": "tool-update-welcome-code",
       "name": "Tool: update_agent_welcome",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        3020,
-        1420
-      ],
-      "parameters": {
-        "name": "update_agent_welcome",
-        "description": "Replace the welcome message (first_message) of a specific ElevenLabs voice agent. Parameters: agentId — agent id from list. newFirstMessage — literal new welcome text.",
-        "language": "javaScript",
-        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { first_message: args.newFirstMessage } } },\n  json: true,\n});\nreturn 'ok';",
-        "specifyInputSchema": true,
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"newFirstMessage\": { \"type\": \"string\", \"description\": \"The new welcome message text (literal)\" }\n  },\n  \"required\": [\"agentId\", \"newFirstMessage\"]\n}"
-      }
+        3024,
+        1424
+      ]
     },
     {
+      "parameters": {
+        "description": "Create a new knowledge document in ElevenLabs from plain text. Returns JSON {id, name}. Call this BEFORE attach_knowledge_to_agent.",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/knowledge-base/text',\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { name: args.docName, text: args.docText },\n  json: true,\n});\nreturn JSON.stringify({ id: res.id, name: res.name || args.docName });",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"docName\": { \"type\": \"string\", \"description\": \"Short human-readable name for the document\" },\n    \"docText\": { \"type\": \"string\", \"description\": \"Full text content of the document\" }\n  },\n  \"required\": [\"docName\", \"docText\"]\n}"
+      },
       "id": "tool-create-kb-doc-code",
       "name": "Tool: create_knowledge_doc",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        3180,
-        1420
-      ],
-      "parameters": {
-        "name": "create_knowledge_doc",
-        "description": "Create a new knowledge document in ElevenLabs from plain text. Returns JSON {id, name}. Call this BEFORE attach_knowledge_to_agent.",
-        "language": "javaScript",
-        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/knowledge-base/text',\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { name: args.docName, text: args.docText },\n  json: true,\n});\nreturn JSON.stringify({ id: res.id, name: res.name || args.docName });",
-        "specifyInputSchema": true,
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"docName\": { \"type\": \"string\", \"description\": \"Short human-readable name for the document\" },\n    \"docText\": { \"type\": \"string\", \"description\": \"Full text content of the document\" }\n  },\n  \"required\": [\"docName\", \"docText\"]\n}"
-      }
+        3184,
+        1424
+      ]
     },
     {
+      "parameters": {
+        "description": "Attach a previously-created knowledge document to a specific ElevenLabs voice agent. Use after create_knowledge_doc. Parameters: agentId, docId, docName.",
+        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: args.docName, id: args.docId }] } } } },\n  json: true,\n});\nreturn 'ok';",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"docId\": { \"type\": \"string\", \"description\": \"Document id returned from create_knowledge_doc\" },\n    \"docName\": { \"type\": \"string\", \"description\": \"Display name of the document\" }\n  },\n  \"required\": [\"agentId\", \"docId\", \"docName\"]\n}"
+      },
       "id": "tool-attach-kb-code",
       "name": "Tool: attach_knowledge_to_agent",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.3,
       "position": [
-        3340,
-        1420
-      ],
-      "parameters": {
-        "name": "attach_knowledge_to_agent",
-        "description": "Attach a previously-created knowledge document to a specific ElevenLabs voice agent. Use after create_knowledge_doc. Parameters: agentId, docId, docName.",
-        "language": "javaScript",
-        "jsCode": "const args = (typeof query === 'string') ? JSON.parse(query) : query;\nawait this.helpers.httpRequest({\n  method: 'PATCH',\n  url: 'https://api.elevenlabs.io/v1/convai/agents/' + args.agentId,\n  headers: { 'xi-api-key': $env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' },\n  body: { conversation_config: { agent: { prompt: { knowledge_base: [{ type: 'text', name: args.docName, id: args.docId }] } } } },\n  json: true,\n});\nreturn 'ok';",
-        "specifyInputSchema": true,
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agentId\": { \"type\": \"string\", \"description\": \"ElevenLabs agent id from the agent list\" },\n    \"docId\": { \"type\": \"string\", \"description\": \"Document id returned from create_knowledge_doc\" },\n    \"docName\": { \"type\": \"string\", \"description\": \"Display name of the document\" }\n  },\n  \"required\": [\"agentId\", \"docId\", \"docName\"]\n}"
-      }
+        3344,
+        1424
+      ]
     }
   ],
   "connections": {
@@ -2089,13 +1371,7 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "MSG: Cancel Update",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "TXT: Get Session",
@@ -2138,166 +1414,6 @@
         ]
       ]
     },
-    "TXT: Route FSM": {
-      "main": [
-        [
-          {
-            "node": "PROMPT: Get Agent (ownership)",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "WELCOME: Get Agent",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "KB: Get Agent",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "ADDAGENT: Create at ElevenLabs",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "AI: Get User Agents",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PROMPT: Get Agent (ownership)": {
-      "main": [
-        [
-          {
-            "node": "PROMPT: Agent found?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PROMPT: Agent found?": {
-      "main": [
-        [
-          {
-            "node": "PROMPT: PATCH ElevenLabs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PROMPT: PATCH ElevenLabs": {
-      "main": [
-        [
-          {
-            "node": "PROMPT: Reset + Log",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PROMPT: Reset + Log": {
-      "main": [
-        [
-          {
-            "node": "PROMPT: Confirm",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WELCOME: Get Agent": {
-      "main": [
-        [
-          {
-            "node": "WELCOME: PATCH",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WELCOME: PATCH": {
-      "main": [
-        [
-          {
-            "node": "WELCOME: Reset + Log",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "WELCOME: Reset + Log": {
-      "main": [
-        [
-          {
-            "node": "WELCOME: Confirm",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "KB: Get Agent": {
-      "main": [
-        [
-          {
-            "node": "KB: Create Doc",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "KB: Create Doc": {
-      "main": [
-        [
-          {
-            "node": "KB: Attach to Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "KB: Attach to Agent": {
-      "main": [
-        [
-          {
-            "node": "KB: Reset + Log",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "KB: Reset + Log": {
-      "main": [
-        [
-          {
-            "node": "KB: Confirm",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "ADDAGENT: Insert": {
       "main": [
         [
@@ -2332,27 +1448,6 @@
         [
           {
             "node": "SELECT: Set Selected",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "EDIT_PROMPT: Set State",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "EDIT_WELCOME: Set State",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "EDIT_KB: Set State",
             "type": "main",
             "index": 0
           }
@@ -2400,39 +1495,6 @@
         [
           {
             "node": "SELECT: Send Agent Menu",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "EDIT_PROMPT: Set State": {
-      "main": [
-        [
-          {
-            "node": "EDIT_PROMPT: Ask",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "EDIT_WELCOME: Set State": {
-      "main": [
-        [
-          {
-            "node": "EDIT_WELCOME: Ask",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "EDIT_KB: Set State": {
-      "main": [
-        [
-          {
-            "node": "EDIT_KB: Ask",
             "type": "main",
             "index": 0
           }
@@ -2495,17 +1557,6 @@
         [
           {
             "node": "ADDAGENT: Error Reply",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MSG: Cancel Update": {
-      "main": [
-        [
-          {
-            "node": "MSG: Cancel Reply",
             "type": "main",
             "index": 0
           }
@@ -2694,10 +1745,29 @@
           }
         ]
       ]
+    },
+    "TXT: Route FSM": {
+      "main": [
+        [
+          {
+            "node": "ADDAGENT: Create at ElevenLabs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Get User Agents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": {},
